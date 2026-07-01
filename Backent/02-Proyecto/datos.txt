@@ -1,0 +1,849 @@
+
+FastAPI + MySQL + JWT (SQLAlchemy usando SQL)
+
+# Crear entorno virtual Python 3.13
+
+## 1. Configuración inicial del proyecto
+
+### 1.1. Crear entorno virtual 
+### 1.2. Crear estructura de directorios
+
+ProyectoF/
+│
+├── app/
+│   │
+│   ├── router/
+│   │   │                    # Endpoints de la API
+│   │   ├── auth.py          # Endpoints de autenticación
+│   │   ├── usuarios.py       # Endpoints de usuarios
+│   │   ├── centros.py       # Endpoints de centros de formación
+│   │   ├── grupos.py         # Endpoints de grupos
+│   │   ├── programas.py     # Endpoints de programas de formación
+│   │   ├── cargar_archivos.py        # Endpoints para cargar archivos
+│   │   ├── cargar_archivos_profe.py  # Endpoints para cargar archivos (profesor)
+│   │   └── dependencies.py  # Dependencias para los endpoints (autenticación)
+│   │
+│   ├── crud/
+│   │   ├── usuarios.py          # Consultas SQL para usuarios
+│   │   ├── centros.py           # Consultas SQL para centros
+│   │   ├── grupos.py            # Consultas SQL para grupos
+│   │   ├── programas.py         # Consultas SQL para programas
+│   │   ├── cargar_archivos.py   # Consultas SQL para cargar archivos
+│   │   └── cargar_archivos_profe.py  # Consultas SQL para cargar archivos (profesor)
+│   
+│   ├── schemas/
+│   │   ├── usuarios.py          # Modelos Pydantic para usuarios
+│   │   ├── centros.py           # Modelos Pydantic para centros
+│   │   ├── grupos.py            # Modelos Pydantic para grupos
+│   │   └── auth.py              # Modelos Pydantic para autenticación
+│   │
+│   └── utils/
+│       └── utils.py             # Funciones útiles (guardar archivos, etc.)
+│
+├── core/
+│   ├── security.py          # Lógica de seguridad y JWT
+│   ├── database.py          # Conexión a la base de datos
+│   └── config.py            # Configuraciones globales
+│
+├── static/
+│   └── docs/                # Directorio para almacenar documentos subidos
+│
+├── main.py                      # Punto de entrada de la aplicación
+├── .env                         # Variables de entorno (no incluir en Git)
+├── .env.example                 # Ejemplo de variables de entorno
+├── .gitignore
+├── requirements.txt
+└── README.md
+
+
+
+### 2. Instalar dependencias
+
+pip install "fastapi[standard]"
+
+pip install pydantic-settings
+
+pip install sqlalchemy
+
+pip install pymysql
+
+pip install pydantic[email]
+
+pip install python-jose[cryptography]
+
+pip install passlib[argon2]
+
+pip install python-multipart
+
+pip install python-dotenv
+
+pip install passlib[bcrypt]
+
+
+
+
+
+
+### 3. Crear archivo de configuración de variables de entorno (.env)
+
+# .env
+DB_HOST=localhost
+DB_PORT=3306
+DB_USER=usuario
+DB_PASSWORD=contraseña
+DB_NAME=fastapi_db
+
+# Secreto para JWT (generar uno seguro)
+JWT_SECRET=tu_clave_secreta_muy_segura_y_larga
+JWT_ALGORITHM=HS256
+JWT_ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+# Configuración del proyecto
+PROJECT_NAME=Nombre del Proyecto
+
+# Directorio para almacenar documentos subidos
+UPLOAD_DOCS=static/docs
+
+También crea un `.env.example` con la misma estructura pero sin valores sensibles.
+
+
+
+## 4. Configuración de la base de datos
+
+
+### 4.1. Crear archivo de configuración (core/config.py)
+
+#Se encarga de leer y organizar toda la configuración del sistema desde el entorno, evitando exponer credenciales directamente en el código.
+
+from pydantic_settings import BaseSettings 
+import os
+from dotenv import load_dotenv
+
+# librería en Python que permite cargar variables de entorno
+load_dotenv()
+
+class Settings(BaseSettings):
+    PROJECT_NAME: str = os.getenv("PROJECT_NAME", "No sabemos")
+    PROJECT_VERSION: str = "0.0.1"
+    PROJECT_DESCRIPTION: str = "Análisis de datos para Regional Risaralda SENA"
+
+    # Configuración de la base de datos
+    DB_HOST: str = os.getenv("DB_HOST", "localhost")
+    DB_PORT: int = int(os.getenv("DB_PORT", "3306"))
+    DB_USER: str = os.getenv("DB_USER", "root")
+    DB_PASSWORD: str = os.getenv("DB_PASSWORD", "")
+    DB_NAME: str = os.getenv("DB_NAME", "")
+
+    UPLOAD_DOCS: str = os.getenv("UPLOAD_DOCS", "static/docs")
+
+    DATABASE_URL: str = f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+    
+    # Configuración JWT
+    jwt_secret: str = os.getenv("JWT_SECRET")
+    jwt_algorithm: str = os.getenv("JWT_ALGORITHM", "HS256")
+    jwt_access_token_expire_minutes: int = int(os.getenv("JWT_ACCESS_TOKEN_EXPIRE_MINUTES", "30"))
+
+    class Config:
+        env_file = ".env"
+
+settings = Settings()
+
+
+
+### 4.2. Configuración de la conexión a la base de datos (core/database.py)
+
+#Aquí se establece cómo el proyecto se conecta a la base de datos, se manejan las sesiones de conexión y se asegura que FastAPI pueda interactuar correctamente con MySQL.
+
+from typing import Generator
+import logging
+
+from sqlalchemy import create_engine, text, MetaData
+from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.exc import SQLAlchemyError, OperationalError, DisconnectionError
+from sqlalchemy.pool import QueuePool
+
+from core.config import settings 
+
+# Configurar el módulo de logging de Python y se usa para crear un registrador de eventos (logger)
+logger = logging.getLogger(__name__)
+
+# Crear el motor de base de datos con configuraciones óptimas
+engine = create_engine(
+    settings.DATABASE_URL,
+    echo=True,           # Activar o desactivar el modo debug para imprimir en consola todas las sentencias SQL
+    pool_pre_ping=True,  # Verifica que las conexiones estén activas antes de usarlas
+    pool_recycle=3600,   # Recicla conexiones después de una hora para evitar el error "connection has been closed"
+    pool_size=20,        # Número máximo de conexiones permanentes en el pool
+    max_overflow=30,     # Conexiones adicionales permitidas temporalmente cuando el pool está lleno
+    pool_timeout=30,     # Tiempo máximo de espera para obtener una conexión del pool
+    poolclass=QueuePool  # Clase de pool para manejo eficiente de conexiones
+)
+
+# Crear la fábrica de sesiones
+# - autocommit=False: Los cambios solo se guardan cuando se hace commit explícitamente
+# - autoflush=False: Las operaciones pendientes solo se envían a la BD cuando se hace flush explícitamente
+# - bind=engine: Vincula la sesión al motor creado anteriormente
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Declarar la base para los modelos ORM
+Base = declarative_base()
+
+# Instancia de MetaData para trabajar con tablas
+metadata = MetaData()
+
+def get_db() -> Generator:
+    """
+    Dependencia para obtener una sesión de base de datos en FastAPI.
+    
+    Crea una nueva sesión por cada solicitud y la cierra automáticamente
+    al finalizar, incluso si ocurre alguna excepción.
+    
+    Yields:
+        Session: Una sesión de SQLAlchemy para interactuar con la base de datos.
+    
+    Example:
+        ```python
+        @app.get("/items/")
+        def read_items(db: Session = Depends(get_db)):
+            return db.query(Item).all()
+        ```
+    """
+    db = SessionLocal()
+    try:
+        yield db  # El 'yield' permite que la función de endpoint use la sesión.
+    finally:
+        db.close() # Cierra la sesión de base de datos y libera los recursos asociados.
+        # Esto es esencial para evitar fugas de memoria y conexiones abiertas.
+
+
+def check_database_connection() -> bool:
+    """
+    Verifica la conexión a la base de datos.
+    
+    Returns:
+        bool: True si la conexión es exitosa, False en caso contrario.
+    """
+    try:
+        with engine.connect() as connection:
+            connection.execute(text("SELECT 1"))
+        return True
+    except (OperationalError, DisconnectionError) as e:
+        logger.error(f"Error de conexión a la base de datos: {str(e)}")
+        return False
+
+
+
+### 4.3. Insertar y corregir base de datos.
+
+CREATE TABLE rol(
+    id_rol SMALLINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nombre_rol VARCHAR(20)
+);
+
+CREATE TABLE usuario(
+    id_usuario INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    nombre_completo VARCHAR(80),
+    num_documento CHAR(12),
+    correo VARCHAR(100) UNIQUE,
+    contra_encript VARCHAR(140),
+    id_rol SMALLINT UNSIGNED,
+    estado BOOLEAN,  -- True = 1 Activo   False = 0 Inactivo
+    FOREIGN KEY (id_rol) REFERENCES rol(id_rol)
+);
+
+-- Ejemplo de tabla adicional: centro de formación
+CREATE TABLE centro(
+    cod_centro INT UNSIGNED PRIMARY KEY,
+    nombre_centro VARCHAR(80)
+);
+
+-- Ejemplo de tabla adicional: programas de formación
+CREATE TABLE programas_formacion(
+    cod_programa INT UNSIGNED PRIMARY KEY,
+    nombre_programa VARCHAR(100),
+    url_pdf VARCHAR(255)
+);
+
+
+## 5. Schemas Pydantic
+
+### 5.1. Crear schemas para usuarios (app/schemas/usuarios.py)
+
+from typing import Optional
+from pydantic import BaseModel, EmailStr, Field
+
+
+class UsuarioBase(BaseModel):
+    nombre_completo: str = Field(min_length=3, max_length=80)
+    id_rol: int
+    correo: EmailStr
+    num_documento: str = Field(min_length=8, max_length=12)
+
+class CrearUsuario(UsuarioBase):
+    contra_encript: str = Field(min_length=8)
+    estado: bool = True
+
+class RetornoUsuario(UsuarioBase):
+    id_usuario: int
+    estado: bool
+    nombre_rol: str
+
+class EditarUsuario(BaseModel):
+    nombre_completo: Optional[str] = Field(default=None, min_length=3, max_length=80)
+    correo: Optional[EmailStr] = Field(default=None)
+    num_documento: Optional[str] = Field(default=None, min_length=8, max_length=12)
+    estado: Optional[bool] = None
+
+class EditarPass(BaseModel):
+    id_usuario: int
+    contra_anterior: str = Field(min_length=8)
+    contra_nueva: str = Field(min_length=8)
+
+
+### 5.2. Crear schemas para autenticación (app/schemas/auth.py)
+
+from pydantic import BaseModel
+from app.schemas.usuarios import RetornoUsuario
+
+class ResponseLoggin(BaseModel):
+    user: RetornoUsuario
+    access_token: str
+
+
+
+## 6. CRUD usuarios (app/crud/usuarios.py)
+
+from fastapi import HTTPException
+from sqlalchemy.orm import Session
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
+from typing import Optional
+import logging
+
+from app.schemas.usuarios import CrearUsuario, EditarPass, EditarUsuario, RetornoUsuario
+from core.security import get_hashed_password, verify_password
+
+logger = logging.getLogger(__name__)
+
+def create_user(db: Session, user: CrearUsuario) -> Optional[bool]:
+    try:
+        dataUser = user.model_dump() # convierte el esquema en diccionario
+        contraOrigin = dataUser["contra_encript"] # saca la contra original
+        contraEncript = get_hashed_password(contraOrigin) # envia la contra original a encriptar 
+        dataUser["contra_encript"] = contraEncript # remplaza la contra original por la encriptada
+
+        query = text("""
+            INSERT INTO usuario (
+                nombre_completo, num_documento, 
+                correo, contra_encript, id_rol,
+                estado
+            ) VALUES (
+                :nombre_completo, :num_documento,
+                :correo, :contra_encript, :id_rol,
+                :estado
+            )
+        """)
+        db.execute(query, dataUser)
+        db.commit()
+
+        return True
+    except Exception as e:
+        db.rollback()
+        logger.error(f"Error al crear usuario: {e}")
+        raise Exception("Error de base de datos al crear el usuario")
+
+def get_user_by_id(db: Session, id_usuario:int):
+    try:
+        query = text("""
+            SELECT usuario.id_usuario, usuario.nombre_completo, 
+                   usuario.num_documento, usuario.correo, usuario.id_rol, 
+                   usuario.estado, rol.nombre_rol
+            FROM usuario
+            INNER JOIN rol ON usuario.id_rol = rol.id_rol
+            WHERE usuario.id_usuario = :id_user
+        """)
+
+        result = db.execute(query, {"id_user": id_usuario}).mappings().first()
+        return result
+    
+    except SQLAlchemyError as e:
+        logger.error(f"Error al buscar usuario por id: {e}")
+        raise Exception("Error de base de datos al buscar el usuario")
+
+
+def get_user_by_email(db: Session, un_correo:str):
+    try:
+        query = text("""
+            SELECT usuario.id_usuario, usuario.nombre_completo, 
+                   usuario.num_documento, usuario.correo, usuario.id_rol, 
+                   usuario.estado, rol.nombre_rol
+            FROM usuario
+            INNER JOIN rol ON usuario.id_rol = rol.id_rol
+            WHERE usuario.correo = :email
+        """)
+
+        result = db.execute(query, {"email": un_correo}).mappings().first()
+        return result
+    
+    except SQLAlchemyError as e:
+        logger.error(f"Error al buscar usuario por email: {e}")
+        raise Exception("Error de base de datos al buscar el usuario por correo")
+
+
+def get_user_by_email_security(db: Session, un_correo:str):
+    try:
+        query = text("""
+            SELECT usuario.id_usuario, usuario.nombre_completo, 
+                   usuario.num_documento, usuario.contra_encript, 
+                   usuario.correo, usuario.id_rol, 
+                   usuario.estado, rol.nombre_rol
+            FROM usuario
+            INNER JOIN rol ON usuario.id_rol = rol.id_rol
+            WHERE usuario.correo = :email
+        """)
+
+        result = db.execute(query, {"email": un_correo}).mappings().first()
+        return result
+    
+    except SQLAlchemyError as e:
+        logger.error(f"Error al buscar usuario por email: {e}")
+        raise Exception("Error de base de datos al buscar el usuario por correo")
+
+
+def user_delete(db: Session, id:int):
+    try:
+        query = text("""
+            DELETE FROM usuario
+            WHERE usuario.id_usuario = :el_id
+        """)
+
+        db.execute(query, {"el_id": id})
+        db.commit()
+        
+        return True
+    
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.error(f"Error al eliminar usuario por id: {e}")
+        raise Exception("Error de base de datos al eliminar el usuario")
+
+
+def update_user(db: Session, user_id: int, user_update: EditarUsuario) -> bool:
+    try:
+        fields = user_update.model_dump(exclude_unset=True)
+        if not fields:
+            return False
+        set_clause = ", ".join([f"{key} = :{key}" for key in fields])
+        fields["user_id"] = user_id
+
+        query = text(f"UPDATE usuario SET {set_clause} WHERE id_usuario = :user_id")
+        db.execute(query, fields)
+        db.commit()
+        return True
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.error(f"Error al actualizar usuario: {e}")
+        raise Exception("Error de base de datos al actualizar el usuario")
+
+
+def update_password(db: Session, user_data: EditarPass) -> bool:
+    try:
+        datos_usuario = user_data.model_dump()
+        contra_encript = get_hashed_password(datos_usuario['contra_nueva'])
+        datos_usuario['pass_encript'] = contra_encript
+
+        query = text(f""" UPDATE usuario SET contra_encript = :pass_encript 
+                        WHERE id_usuario = :id_usuario """)
+        db.execute(query, datos_usuario)
+        db.commit()
+        return True
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.error(f"Error al actualizar contraseña: {e}")
+        raise Exception("Error de base de datos al actualizar la contraseña")
+
+
+def verify_user_pass(db: Session, user_data: EditarPass) -> bool:
+    try:
+        query = text("""
+            SELECT usuario.contra_encript
+            FROM usuario
+            WHERE usuario.id_usuario = :id_user
+        """)
+
+        result = db.execute(query, {"id_user": user_data.id_usuario }).mappings().first()
+        contra_en_db = result.contra_encript
+        contra_anterior = user_data.contra_anterior
+
+        validated = verify_password(contra_anterior, contra_en_db)
+
+        if not validated:
+            return False
+        else:
+            return True
+    
+    except SQLAlchemyError as e:
+        logger.error(f"Error al validar la contraseña: {e}")
+        raise Exception("Error de base de datos al validar la contraseña")
+
+
+
+## 7. Endpoints usuarios  (app/router/usuarios.py)
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
+from app.router.dependencies import get_current_user
+from app.schemas.usuarios import CrearUsuario, EditarPass, EditarUsuario, RetornoUsuario
+from core.database import get_db
+from app.crud import usuarios as crud_users
+
+
+router = APIRouter()
+
+@router.post("/registrar", status_code=status.HTTP_201_CREATED)
+def create_user(
+    user: CrearUsuario,
+    db: Session = Depends(get_db),
+    user_token: RetornoUsuario = Depends(get_current_user)
+):
+    try:
+        if user_token.id_rol != 1:
+            raise HTTPException(status_code=401, detail="No tienes permisos para crear usuario")
+        
+        crear = crud_users.create_user(db, user)
+        if crear:
+            return {"message": "Usuario creado correctamente"}
+        else:
+            return {"message": "El Usuario no pudo ser creado correctamente"}
+    
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/obtener-por-id/{id_usuario}", status_code=status.HTTP_200_OK, response_model=RetornoUsuario)
+def get_by_id(id_usuario:int, db: Session = Depends(get_db)):
+    try:
+        user = crud_users.get_user_by_id(db, id_usuario)
+        if user is None:
+            raise HTTPException(status_code=404, detail="Usuario no encontrado")
+        return user
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/obtener-por-correo/{correo}", status_code=status.HTTP_200_OK, response_model=RetornoUsuario)
+def get_by_email(correo:str, db: Session = Depends(get_db)):
+    try:
+        user = crud_users.get_user_by_email(db, correo)
+        if user is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Usuario no encontrado")
+        return user
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete("/eliminar-por-id/{id_usuario}", status_code=status.HTTP_200_OK)
+def delete_by_id(id_usuario:int, db: Session = Depends(get_db)):
+    try:
+        user = crud_users.user_delete(db, id_usuario)
+        if user:
+            return {"message": "Usuario eliminado correctamente"}
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.put("/editar/{user_id}")
+def update_user(user_id: int, user: EditarUsuario, db: Session = Depends(get_db)):
+    try:
+        success = crud_users.update_user(db, user_id, user)
+        if not success:
+            raise HTTPException(status_code=400, detail="No se pudo actualizar el usuario")
+        return {"message": "Usuario actualizado correctamente"}
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.put("/editar-contrasenia")
+def update_password(user: EditarPass, db: Session = Depends(get_db)):
+    try:
+        verificar = crud_users.verify_user_pass(db, user)
+        if not verificar:
+            raise HTTPException(status_code=400, detail="La contraseña actual no es igual a la enviada")
+
+        success = crud_users.update_password(db, user)
+        if not success:
+            raise HTTPException(status_code=400, detail="No se pudo actualizar la contraseña del usuario")
+        return {"message": "Contraseña actualizada correctamente"}
+    except SQLAlchemyError as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+
+## 8. Configurar archivo main.py
+
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from app.router import usuarios
+from app.router import centros
+from app.router import auth
+from app.router import cargar_archivos
+from app.router import programas
+
+app = FastAPI()
+
+# Montar directorio estático para servir archivos
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+# Incluir en el objeto app los routers
+app.include_router(usuarios.router, prefix="/usuario", tags=["servicios usuarios"])
+app.include_router(centros.router, prefix="/centro", tags=["servicios de Centros de Formación"])
+app.include_router(auth.router, prefix="/access", tags=["servicios de login"])
+app.include_router(cargar_archivos.router, prefix="/cargar", tags=["cargar archivos excel"])
+app.include_router(programas.router)
+
+# Configuración de CORS para permitir todas las solicitudes desde cualquier origen
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Permitir solicitudes desde cualquier origen
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "PUT", "DELETE"],  # Permitir estos métodos HTTP
+    allow_headers=["*"],  # Permitir cualquier encabezado en las solicitudes
+)
+
+@app.get("/")
+def read_root():
+    return {
+                "message": "ok",
+                "autor": "ADSO 2925888"
+            }
+
+
+
+## 9. Seguridad y JWT
+
+### 9.1. Implementar funciones de seguridad (core/security.py)
+
+from datetime import datetime, timedelta, timezone
+from jose import JWTError, jwt
+from passlib.context import CryptContext
+from core.config import settings
+
+# Configurar hashing de contraseñas
+# Opción 1: Argon2 (más seguro, recomendado)
+pwd_context = CryptContext(schemes=["argon2"], deprecated="auto")
+
+# Opción 2: Bcrypt (alternativa)
+# pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# Función para generar un hashed_password
+def get_hashed_password(password: str):
+    return pwd_context.hash(password)
+
+# Función para verificar una contraseña hashada
+def verify_password(plain_password: str, hashed_password: str):
+    return pwd_context.verify(plain_password, hashed_password)
+
+# Función para crear un token JWT
+def create_access_token(data: dict):
+    to_encode = data.copy()
+    expire = datetime.now(timezone.utc) + timedelta(minutes=settings.jwt_access_token_expire_minutes)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, settings.jwt_secret, algorithm=settings.jwt_algorithm)
+    return encoded_jwt
+
+# Función para verificar si un token JWT es válido
+def verify_token(token: str):
+    try:
+        payload = jwt.decode(token, settings.jwt_secret, algorithms=[settings.jwt_algorithm])
+        user_id = payload.get("sub")
+        return int(user_id) if user_id is not None else None
+    except jwt.ExpiredSignatureError: # Token ha expirado
+        print("Token expirado")
+        return None
+    except JWTError as e:
+        print("Error al decodificar el token:", str(e))
+        return None
+
+
+
+## 10. Dependencias y autenticación
+
+### 10.1. Crear dependencias para autenticación (app/router/dependencies.py)
+
+from fastapi import Depends, HTTPException
+from sqlalchemy.orm import Session
+from app.crud.usuarios import get_user_by_email_security, get_user_by_id
+from core.security import verify_password, verify_token
+from core.database import get_db
+from fastapi.security import OAuth2PasswordBearer
+
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/access/token")
+
+def get_current_user(
+        token: str = Depends(oauth2_scheme),
+        db: Session = Depends(get_db)
+):
+    user = verify_token(token)
+    if user is None:
+        raise HTTPException(status_code=401, detail="Token Invalido")
+    user_db = get_user_by_id(db, user)
+    if user_db is None:
+        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+    if not user_db.estado:
+        raise HTTPException(status_code=403, detail="Usuario inactivo. No autorizado")
+    return user_db
+
+
+def authenticate_user(username: str, password: str, db: Session):
+    user = get_user_by_email_security(db, username)
+    if not user:
+        return False
+    if not verify_password(password, user.contra_encript):
+        return False
+    return user
+
+
+
+## 11. Endpoints auth
+
+### 11.1. Endpoint de autenticación (app/router/auth.py)
+
+from typing import Annotated
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from app.router.dependencies import authenticate_user
+from app.schemas.auth import ResponseLoggin
+from core.security import create_access_token
+from core.database import get_db
+from fastapi.security import OAuth2PasswordRequestForm
+
+
+router = APIRouter()
+
+@router.post("/token", response_model=ResponseLoggin)
+async def login_for_access_token(
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    db: Session = Depends(get_db)
+):
+    user = authenticate_user(form_data.username, form_data.password, db)
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="Datos Incorrectos en email o password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    access_token = create_access_token(
+        data={"sub": str(user.id_usuario), "rol": user.id_rol}
+    )
+
+    return ResponseLoggin(
+        user=user,
+        access_token=access_token
+    )
+
+
+## 12. Utilidades
+
+### 12.1. Funciones útiles (app/utils/utils.py)
+
+import os
+import uuid
+from fastapi import HTTPException
+from core.config import settings 
+
+def save_uploaded_document(file):
+    """
+    Guarda archivos PDF, Excel o Word en el servidor y retorna la ruta del archivo.
+    """
+    # Directorio base de almacenamiento
+    UPLOAD_DOCS = settings.UPLOAD_DOCS 
+    os.makedirs(UPLOAD_DOCS, exist_ok=True)
+
+    # Tipos MIME válidos
+    valid_content_types = [
+        'application/pdf',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',  # .docx
+        'application/msword',  # .doc
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',  # .xlsx
+        'application/vnd.ms-excel'  # .xls
+    ]
+
+    # Extensiones válidas
+    valid_extensions = ['.pdf', '.doc', '.docx', '.xls', '.xlsx']
+
+    # Verificar tipo MIME
+    if file.content_type not in valid_content_types:
+        raise HTTPException(
+            status_code=400,
+            detail="Formato inválido. Solo se permiten archivos PDF, Word o Excel."
+        )
+
+    # Verificar extensión
+    extension = os.path.splitext(file.filename)[1].lower()
+    if extension not in valid_extensions:
+        raise HTTPException(
+            status_code=400,
+            detail="Extensión inválida. Solo se permiten .pdf, .doc, .docx, .xls, .xlsx."
+        )
+
+    # Leer contenido para validar tamaño
+    file_content = file.file.read()
+    file.file.seek(0)  # Reiniciar el puntero
+
+    # Tamaño máximo: 10 MB
+    max_file_size = 10 * 1024 * 1024
+    if len(file_content) > max_file_size:
+        raise HTTPException(
+            status_code=400,
+            detail="El archivo es demasiado grande. Tamaño máximo: 10 MB."
+        )
+
+    # Generar nombre único manteniendo la extensión original
+    unique_filename = f"{uuid.uuid4()}{extension}"
+    file_path = os.path.join(UPLOAD_DOCS, unique_filename)
+
+    # Guardar el archivo
+    try:
+        with open(file_path, "wb") as buffer:
+            buffer.write(file_content)
+    except Exception as e:
+        print(f"Error al guardar el archivo: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail="Error al guardar el archivo en el servidor."
+        )
+
+    return file_path
+
+
+
+
+# 1. Schema (app/schemas/productos.py)
+class CrearProducto(ProductoBase):
+class RetornoProducto(ProductoBase):
+
+
+# 2. CRUD (app/crud/productos.py)
+def create_producto(db: Session, producto: CrearProducto):
+    # Implementar lógica
+    pass
+
+# 3. Router (app/router/productos.py)
+router = APIRouter()
+
+@router.post("/registrar")
+def create_producto(
+    producto: CrearProducto,
+    db: Session = Depends(get_db),
+    user_token: RetornoUsuario = Depends(get_current_user)
+):
+    # Implementar lógica
+    pass
+
+# 4. Registrar en main.py
+from app.router import productos
+app.include_router(productos.router, prefix="/producto", tags=["productos"])
+```

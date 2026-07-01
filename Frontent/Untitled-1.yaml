@@ -1,0 +1,59 @@
+Programas Formacion:
+cod_programa
+nombre
+nivel
+tiempo_dur
+unidad_dur
+estado
+url_pdf
+
+Redes Conocimiento:
+cod_red
+nombre
+
+
+Registro Calificado:
+version,
+tipo_tramite 
+fecha_radicado
+numero_resolucion 
+fecha_resolucion 
+fecha_vencimiento 
+vigencia 
+modalidad 
+clasificacion 
+estado_catalogo
+
+
+
+----------------------------------------------------------------------
+
+Total
+total_victimas: 25,          // despl_viol_...
+total_etnicos: 18,           // negro_apr_tot...
+total_discapacidad: 8,       // discap_apr_tot...
+
+
+indicadores: {
+    // Victimas
+    despl_viol_apr_tot: 12,
+    indig_despl_viol_apr_tot: 3,
+    afro_despl_viol_apr_tot: 5,
+    despojo_apr_tot: 2,
+    amenaza_apr_tot: 3,
+
+    // Étnica
+    negro_apr_tot: 6,
+    afro_apr_tot: 4,
+    indig_apr_tot: 5,
+    raizal_apr_tot: 3,
+
+    // Discapacidad
+    discap_apr_tot: 8,
+    discap_fis_apr_tot: 3,
+    discap_aud_apr_tot: 2,
+    discap_vis_apr_tot: 2,
+    discap_mult_apr_tot: 1,
+
+    // ... todos los demás campos
+}

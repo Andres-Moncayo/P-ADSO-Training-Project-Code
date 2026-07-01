@@ -1,0 +1,257 @@
+:root {
+    --sena-primary: hsl(93, 75%, 40%);
+    --sena-secondary: #3d39b4;
+    --sena-accent: #ffffff;
+    --neutral-900: #0f172a;
+    --neutral-700: #334155;
+    --neutral-500: #73a9f6;
+    --neutral-300: #cbd5e1;
+    --neutral-100: #f8fafc;
+    --white: #ffffff;
+    --danger: #dc2626;
+    --warning: #f59e0b;
+    --success: #16a34a;
+}
+
+body {
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+    color: var(--neutral-900);
+    background: #fff;
+}
+
+
+/* Navbar */
+
+.navbar {
+    background-image: linear-gradient(90deg, var(--sena-primary), var(--sena-secondary));
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    padding: 1rem 2rem;
+}
+
+.navbar-brand,
+.logoApp {
+    color: var(--sena-accent) !important;
+    font-weight: bold;
+}
+
+.sena-logo {
+    height: 32px;
+}
+
+.nav-link {
+    color: white !important;
+    font-weight: 500;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 0.5rem;
+}
+
+.navbar-toggler {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+.senabtn,
+.cerrarsec,
+.sena-btn-outline {
+    color: white;
+    border: 1px solid var(--sena-accent);
+}
+
+.senabtn:hover,
+.cerrarsec:hover,
+.sena-btn-outline:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.botonesOpci {
+    position: absolute;
+    top: 50%;
+    right: 2rem;
+    transform: translateY(-50%);
+    display: flex;
+    gap: 1rem;
+}
+
+.logoApp {
+    position: absolute;
+    top: 50%;
+    left: 2rem;
+    transform: translateY(-50%);
+}
+
+
+/* App layout */
+
+.app {
+    display: flex;
+    width: 100%;
+    min-width: 0;
+}
+
+
+/* Sidebar */
+
+.sidebar {
+    flex: 0 0 340px;
+    border: 1px solid var(--neutral-300);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    background: white;
+    color: var(--neutral-900);
+    font-size: 0.9rem;
+}
+
+.sidebar h6 {
+    font-weight: 600;
+    color: var(--sena-primary);
+    border-bottom: 2px solid var(--sena-primary);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.sidebar .form-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+}
+
+.sidebar .form-select,
+.sidebar .form-control {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--neutral-300);
+    border-radius: 6px;
+}
+
+.sidebar .form-select:focus,
+.sidebar .form-control:focus {
+    border-color: var(--sena-primary);
+    box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.2);
+    outline: none;
+}
+
+
+/* Botones */
+
+.btn-primary {
+    background-color: var(--sena-primary);
+    border-color: var(--sena-primary);
+}
+
+.btn-primary:hover {
+    background-color: #14833f;
+    border-color: #14833f;
+}
+
+
+/* Main content */
+
+.main {
+    flex: 1;
+    min-width: 0;
+    padding: 1.5rem;
+}
+
+
+/* Context bar */
+
+.context-bar {
+    background: var(--neutral-300);
+    border: 1px solid var(--neutral-300);
+    border-radius: 0.6rem;
+    padding: 0.6rem 0.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.context-bar .label {
+    color: var(--neutral-700);
+    font-size: 0.9rem;
+}
+
+.context-bar .value {
+    font-weight: 600;
+}
+
+
+/* Table */
+
+.table-scroll {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid var(--neutral-300);
+    border-radius: 0.6rem;
+    background: white;
+}
+
+.table-scroll table {
+    min-width: 100%;
+    width: max-content;
+}
+
+.table-dense th,
+.table-dense td {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+}
+
+.table-scroll thead th {
+    position: sticky;
+    top: 0;
+    background: white;
+    border-bottom: 1px solid var(--neutral-300);
+}
+
+
+/* Responsivo */
+
+@media (max-width: 992px) {
+    .app {
+        flex-direction: column;
+    }
+    .sidebar {
+        width: 100%;
+        margin-bottom: 1.5rem;
+    }
+    .botonesOpci,
+    .logoApp {
+        position: static;
+        transform: none;
+        margin-top: 1rem;
+        justify-content: center;
+    }
+}
+
+#btnFlotante {
+    position: fixed;
+    bottom: 22px;
+    right: 22px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    z-index: 9999;
+    transition: 0.25s ease;
+}
+
+#btnFlotante:hover {
+    transform: scale(1.1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+}
+
+.hover-shadow {
+    transition: all 0.3s ease;
+}
+
+.hover-shadow:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-2px);
+}
+

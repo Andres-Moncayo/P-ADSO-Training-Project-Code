@@ -1,0 +1,583 @@
+:root {
+    /* Colores principales (inspirados en SENA) */
+    --sena-primary: hsl(93, 75%, 40%);   /* Verde institucional */
+    --sena-secondary: #3d39b4; /* Azul oscuro casi negro */
+
+    /* Acentos */
+    --sena-accent: #ffffff;    /* Verde esmeralda moderno */
+    --sena-highlight: #4f8920; /* Verde brillante para hover */
+
+    /* Neutros */
+    --neutral-900: #0f172a;    /* Texto principal */
+    --neutral-700: #334155;    /* Subtítulos */
+    --neutral-500: #73a9f6;    /* Texto secundario */
+    --neutral-300: #cbd5e1;    /* Bordes / líneas */
+    --neutral-100: #f8fafc;    /* Fondo suave */
+    --white: #ffffff;          /* Blanco puro */
+
+    /* Estado */
+    --danger: #dc2626;         /* Error */
+    --warning: #f59e0b;        /* Advertencia */
+    --success: #16a34a;        /* Aprobado / correcto */
+
+    /* Extras */
+    --gradient-primary: linear-gradient(135deg, #16a34a, #059669);
+    --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+body {
+  /* Imagen + degradado institucional SENA */
+  background: linear-gradient(135deg, rgb(56, 42, 138), rgba(0, 180, 120, 0.5)),
+              url('../img/klipartz.com\ \(2\).png');
+
+  /* Muestra toda la imagen */
+  background-size: cover;   /* 🔹 Ajusta para que se vea completa */
+  background-repeat: no-repeat; /* Evita repeticiones */
+  background-attachment: fixed; /* Opcional: mantiene la imagen fija al hacer scroll */
+
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Tarjeta de login */
+.login-container {
+  background: #ffffff;       /* 🔹 Blanco sólido */
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2); /* sombra elegante */
+  max-width: 420px;
+  width: 90%;
+}
+
+body {
+    background-color: var(--neutral-100);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: var(--neutral-900);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    
+}
+
+.login-container {
+    border-radius: 16px;
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    width: 100%;
+    max-width: 450px;
+    animation: fadeInUp 0.6s ease-out;
+
+}
+
+.login-header {
+    background: var(--sena-primary);
+    padding: 2rem 1.5rem;
+    text-align: center;
+    position: relative;
+}
+
+.login-header h1 {
+    color: var(--white);
+    font-size: 1.8rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.login-header p {
+    color: var(--sena-accent);
+    font-size: 1rem;
+    opacity: 0.9;
+}
+
+.login-form {
+    padding: 2rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    font-weight: 600;
+    color: var(--neutral-900);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.form-control {
+    border: 2px solid var(--neutral-300);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background-color: var(--white);
+}
+
+.form-control:focus {
+    border-color: var(--sena-primary);
+    box-shadow: 0 0 0 3px rgba(147, 210, 61, 0.2);
+    outline: none;
+}
+
+.form-control.error {
+    border-color: var(--danger);
+}
+
+.form-control.success {
+    border-color: var(--success);
+}
+
+.input-group {
+    position: relative;
+}
+
+.input-group-text {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--neutral-500);
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.input-group-text:hover {
+    color: var(--sena-primary);
+}
+
+.btn-login {
+    background: var(--sena-primary);
+    border: none;
+    border-radius: 8px;
+    padding: 0.85rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--white);
+    width: 100%;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    margin-top: 0.5rem;
+}
+
+.btn-login:hover {
+    background: var(--sena-highlight);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(147, 210, 61, 0.3);
+}
+
+.btn-login:active {
+    transform: translateY(0);
+}
+
+.btn-login:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.login-footer {
+    text-align: center;
+    padding: 1rem 2rem;
+    border-top: 1px solid var(--neutral-300);
+    background-color: var(--neutral-100);
+}
+
+.login-footer a {
+    color: var(--sena-primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s ease;
+}
+
+.login-footer a:hover {
+    color: var(--sena-highlight);
+    text-decoration: underline;
+}
+.footer-sena {
+    position: relative;
+    /* Fondo múltiple: primero la imagen, luego el degradado */
+    background-image: 
+        url('img/FooterModoLight.svg'), 
+        linear-gradient(90deg, var(--sena-primary), var(--neutral-500));
+    background-size: cover, cover;          /* Tamaño de cada fondo */
+    background-position: center, center;    /* Posición de cada fondo */
+    background-repeat: no-repeat, no-repeat;/* Evita repetición de ambos */
+    
+    color: var(--sena-accent);
+    overflow: hidden;
+    border-top-left-radius: 40px;
+    border-top-right-radius: 40px;
+}
+
+.error-message {
+    color: var(--danger);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    display: none;
+}
+
+.success-message {
+    color: var(--success);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    display: none;
+}
+
+.forgot-password {
+    text-align: right;
+    margin-bottom: 1.5rem;
+}
+
+.forgot-password a {
+    color: var(--sena-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.forgot-password a:hover {
+    color: var(--sena-primary);
+    text-decoration: underline;
+}
+
+.social-login {
+    margin: 1.5rem 0;
+    text-align: center;
+}
+
+.social-login p {
+    color: var(--neutral-700);
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.social-login p::before,
+.social-login p::after {
+    content: "";
+    display: inline-block;
+    width: 30%;
+    height: 1px;
+    background-color: var(--neutral-300);
+    position: absolute;
+    top: 50%;
+}
+
+.social-login p::before {
+    left: 0;
+}
+
+.social-login p::after {
+    right: 0;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.social-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--neutral-100);
+    color: var(--neutral-700);
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    border: 2px solid var(--neutral-300);
+}
+
+.social-icon:hover {
+    background-color: var(--sena-primary);
+    color: var(--white);
+    transform: translateY(-3px);
+    border-color: var(--sena-primary);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.loader {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(255,255,255,.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 1s ease-in-out infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@media (max-width: 576px) {
+    .login-container {
+        max-width: 100%;
+        margin: 1rem;
+    }
+    
+    .login-header {
+        padding: 1.5rem 1rem;
+    }
+    
+    .login-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .login-form {
+        padding: 1.5rem;
+    }
+}
+   
+/* Estilos para la página de perfil de usuario */
+/* Contenedor principal centrado */
+.header-perfil {
+    max-width: 600px;
+    width: 100%;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    color: var(--neutral-300);
+}
+.brand {
+    max-width: 10rem;
+    margin-bottom: 1rem;
+}
+
+/* Alinear logo y texto en headerPerfil */
+.header-perfil {
+    display: flex;
+    align-items: center;       /* centra verticalmente el logo respecto al bloque de texto */
+    gap: 18px;                 /* separación entre logo y texto */
+    padding: 12px 0;
+}
+
+/* Tarjeta de perfil (clean, institucional) */
+.profile-card {
+    display:flex;
+    align-items:flex-start;
+    gap:28px;
+    padding:28px;
+}
+
+/* Columna izquierda (avatar + datos resumidos) */
+.profile-left{
+    width:260px; 
+    flex-shrink:0
+}
+.profile-avatar{
+    width:140px; 
+    height:140px; 
+    border-radius:50%; 
+    overflow:hidden; 
+    margin:0 auto; 
+    box-shadow:0 8px 20px rgba(0,0,0,0.06); 
+}
+.profile-avatar img{
+    width:100%; 
+    height:100%; 
+    object-fit:cover; 
+    display:block
+}
+
+.mini-card{
+    margin-top:18px; 
+    border-radius:10px; padding:12px; 
+    text-align:center; 
+    border:1px solid var(--neutral-300);
+}
+.mini-card h3{
+    margin:0; 
+    font-size:1.1rem; 
+    color:var(--neutral-900);
+}
+.mini-card p{
+    margin:4px 0 0; 
+    color:var(--neutral-300); 
+    font-size:0.9rem}
+
+/* Columna derecha (datos principales) */
+.profile-right{
+    flex:1
+}
+.profile-header{
+    display:flex; 
+    align-items:center; 
+    justify-content:space-between; 
+    gap:16px; 
+    margin-bottom:10px;
+}
+.profile-header .main-name{
+    font-size:1.45rem; 
+    font-weight:700; 
+    color:var(--neutral-300)
+}
+.profile-sub{ 
+    color:var(--neutral-300); 
+    font-size:0.95rem
+}
+
+.profile-info { 
+    margin-top:8px; 
+}
+.info-row{ 
+    display:flex; 
+    gap:14px; 
+    margin-bottom:10px; 
+    align-items:center 
+}
+.info-col{ 
+    flex:1; 
+    background:transparent; 
+    border-radius:10px; 
+    padding:8px 12px; 
+    border:1px dashed transparent }
+
+.info-key{ 
+    display:block; 
+    font-weight:700; 
+    color:var(--neutral-300); 
+    font-size:0.9rem 
+}
+.info-val{ 
+    display:block; 
+    font-weight:600; 
+    color:var(--neutral-300); 
+    font-size:1rem; 
+    margin-top:6px 
+}
+
+/* Estado badge */
+.badge-estado{ 
+    padding:6px 10px; 
+    border-radius:10px; 
+    font-weight:700; 
+    font-size:0.85rem 
+}
+.activo{ 
+    background: linear-gradient(90deg, rgba(22,163,74,0.12), rgba(5,150,105,0.06)); 
+    color:var(--success); 
+    border:1px solid rgba(22,163,74,0.12) 
+}
+.inactivo{ 
+    background: #fff6f6; 
+    color:var(--danger); 
+    border:1px solid rgba(220,38,38,0.06) 
+}
+
+/* Botones */
+
+/* Loader circular para perfil */
+.loading-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 10px;
+  color: var(--neutral-100);
+  font-weight: 700;
+  font-size: 0.95rem;
+  background: rgba(255,255,255,0.06);
+  border-radius: 999px;
+  border: 1px solid rgba(15,23,42,0.04);
+  box-shadow: var(--shadow-soft);
+}
+
+/* Spinner (ring) */
+.spinner {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 4px solid rgba(0,0,0,0.08);
+  border-top-color: var(--sena-primary);
+  animation: spin 0.8s linear infinite;
+  box-shadow: 0 4px 10px rgba(3, 10, 20, 0.06);
+}
+
+/* Texto junto al spinner */
+.loading-text {
+  line-height: 1;
+  color: var(--neutral-300);
+  font-weight: 700;
+}
+
+/* Ocultar con display cuando ya no se necesita */
+.loading-wrap.hidden { display: none !important; }
+
+/* Anima rotación */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive reduce tamaño en móviles */
+@media (max-width: 520px) {
+  .spinner { width: 28px; height: 28px; border-width: 3px; }
+  .loading-text { font-size: 0.9rem; }
+}
+
+.actions { 
+    margin-top:18px; 
+    display:flex; 
+    gap:12px 
+}
+.btn-logout{ 
+    background: var(--danger); 
+    color:white; 
+    border-radius:10px; 
+    padding:8px 14px; 
+    border:none; 
+    font-weight:700 
+}
+.btn-edit{ 
+    background: transparent; 
+    border:1px solid var(--sena-primary); 
+    color:var(--sena-primary); 
+    border-radius:10px; 
+    padding:8px 14px; 
+    font-weight:700 
+}
+.btn-logout:hover{ 
+    transform:translateY(-2px)
+}
+
+/* Alert personalizada */
+#alert { display:none; }
+
+/* Responsive */
+@media (max-width: 880px){
+    .profile-card{flex-direction:column; align-items:center}
+    .profile-left{width:100%}
+    .profile-right{width:100%}
+    .topbar{padding:0 8px}
+}
+
+@media (max-width: 720px) {
+    .header-perfil {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 8px;
+    }
+
+    .header-perfil .brand .logo {
+        height: 64px;
+    }
+
+    .header-perfil > div:last-child { justify-content: center; }
+}

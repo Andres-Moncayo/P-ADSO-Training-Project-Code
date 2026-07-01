@@ -1,0 +1,1080 @@
+:root {
+    /* Colores principales (inspirados en SENA) */
+    --sena-primary: hsl(93, 75%, 40%);   /* Verde institucional */
+    --sena-secondary: #3d39b4; /* Azul oscuro casi negro */
+
+    /* Acentos */
+    --sena-accent: #ffffff;    /* Verde esmeralda moderno */
+    --sena-highlight: #4f8920; /* Verde brillante para hover */
+
+    /* Neutros */
+    --neutral-900: #0f172a;    /* Texto principal */
+    --neutral-700: #334155;    /* Subtítulos */
+    --neutral-500: #73a9f6;    /* Texto secundario */
+    --neutral-300: #cbd5e1;    /* Bordes / líneas */
+    --neutral-100: #f8fafc;    /* Fondo suave */
+    --white: #ffffff;          /* Blanco puro */
+
+    /* Estado */
+    --danger: #dc2626;         /* Error */
+    --warning: #f59e0b;        /* Advertencia */
+    --success: #16a34a;        /* Aprobado / correcto */
+
+    /* Extras */
+    --gradient-primary: linear-gradient(135deg, #16a34a, #059669);
+    --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ==== NAVBAR SENA MEJORADO ==== */
+.navbar {
+   background-image: 
+  url('../img/vector.webp'), 
+  linear-gradient(90deg, var(--sena-highlight), var(--sena-secondary));  
+  background-attachment: fixed; /* Opcional: mantiene la imagen fija al hacer scroll */
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0;         /* 🔑 asegura que no haya margen superior */
+  padding-top: 0;
+}
+.sena-navbar {
+  background-image: linear-gradient(90deg, var(--sena-primary), var(--sena-secondary));
+  background-position: center;    /* Posición de cada fondo */
+  margin: 0 0 5rem 0;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  padding: 2rem 2rem;
+}
+
+.sena-logo {
+  height: 36px;
+}
+
+.navbar-brand {
+  color: var(--sena-accent) !important;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 4rem;
+}
+
+.navbar-nav .nav-link {
+  position: relative;
+  color: #ffffff;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.navbar-nav .nav-link i {
+  margin-right: 6px;
+  transition: transform 0.3s ease;
+}
+
+/* Barra inferior animada */
+.navbar-nav .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0%;
+  height: 3px;
+  background-color: #f8fbff;
+  border-radius: 2px;
+  transition: width 0.3s ease-in-out;
+}
+
+.navbar-nav .nav-link:hover::after {
+  width: 100%;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #007bff;
+}
+
+.navbar-nav .nav-link:hover i {
+  transform: translateY(-2px) scale(1.1);
+}
+
+
+.navbar-nav .nav-link {
+  
+  margin: 0 0.3rem;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  background: rgba(255,255,255,0.15);
+  color: #ffffff !important;
+}
+.navbar {
+  position: relative; /* Necesario para que absolute se refiera a este nav */
+  min-height: 30px;   /* Ajusta según tu diseño */
+}
+
+.senabtn,
+.cerrarsec {
+  color: #fff;           /* Texto blanco */
+}
+
+.senabtn:hover, .cerrarsec:hover {
+  color: #fff;           /* Texto blanco */
+  background-color: #ffffff23;
+}
+
+
+.botonesOpci {
+  position: absolute;
+  top: 60%;            /* pegado arriba (puedes ajustar: 1rem, 10px, etc.) */
+  right: 8%;          /* pegado a la derecha */
+  transform: translateY(-50); /* ya no hace falta centrar verticalmente */
+  display: flex;
+  align-items: center;
+  gap: 1rem;         /* espacio entre los botones */
+  padding: 1rem;     /* opcional: separación interna del borde */
+}
+
+#appLogo {
+  text-transform: uppercase;
+}
+
+
+.logoApp {
+  position: absolute;
+  top: 70%;            /* pegado arriba (puedes ajustar: 1rem, 10px, etc.) */
+  left: 8%;          /* pegado a la derecha */
+  transform: translateY(-50); /* ya no hace falta centrar verticalmente */
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.logoApp img {
+  height: 32px;
+  width: auto;
+}
+
+.sena-btn-outline {
+  color: white;
+  border: 1px solid var(--sena-accent);
+}
+.sena-btn-outline:hover {
+  background: var(--sena-accent);
+  color: var(--sena-blue-900);
+  border-color: var(--sena-accent);
+}
+
+* { 
+    box-sizing: border-box; 
+}
+
+html, body { 
+    width:100%;
+    max-width:100%; 
+    overflow-x:hidden; 
+    height: 100%;
+}
+
+.page-wrap {
+  min-height: 100vh;         /* ocupa toda la ventana */
+  display: flex;
+  flex-direction: column;    /* header - main - footer */
+}
+
+body{ 
+    background:#fff; 
+    font-family:system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif; 
+    color:var(--neutral-900); 
+}
+
+.btn-primary{
+    --bs-btn-bg:var(--sena-primary); --bs-btn-border-color:var(--sena-primary);
+    --bs-btn-hover-bg:#14833f; --bs-btn-hover-border-color:#14833f;
+    --bs-btn-active-bg:#116e35; --bs-btn-active-border-color:#116e35;
+}
+
+.app{ 
+    display:flex; width:100%; min-width:0;
+    
+} 
+
+/* Sidebar de filtros */
+.sidebar {
+  flex:0 0 340px;
+  border: 1px solid var(--neutral-300);
+  border-radius: 12px;
+  width: 100%;
+  color: var(--neutral-900);
+  font-size: 0.9rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.10);
+}
+
+.sidebar h6 {
+  font-weight: 600;
+  color: var(--sena-primary);
+  border-bottom: 2px solid var(--sena-primary);
+  padding-bottom: 0.5rem;
+}
+
+/* Labels */
+.sidebar .form-label {
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+}
+
+/* Selects y inputs */
+.sidebar .form-select,
+.sidebar .form-control {
+  border: 1px solid var(--neutral-300) !important;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  padding: 0.45rem 0.6rem;
+}
+
+.sidebar .form-select:focus,
+.sidebar .form-control:focus {
+  border-color: var(--sena-primary) ;
+  box-shadow: 0 0 0 2px rgba(22,163,74,0.2); /* verde transparente */
+  outline: none;
+}
+
+/* Botones */
+.sidebar .btn {
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  border-radius: 6px;
+}
+
+.sidebar .btn-primary {
+  background: var(--sena-primary) !important;
+  border: none;
+  font-weight: 500;
+}
+
+.sidebar .btn-primary:hover {
+  background: var(--sena-secondary) !important;
+}
+
+.sidebar .btn-outline-secondary {
+  border: 1px solid var(--neutral-300);
+  color: var(--neutral-700);
+}
+
+.sidebar .btn-outline-secondary:hover {
+  background: var(--neutral-300);
+  color: var(--white);
+}
+
+/* Espaciados dentro del sidebar */
+.sidebar .row {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.sidebar .col-6 {
+  padding-left: 0;
+  padding-right: 0;
+}
+
+/* Responsive: sidebar ocupa todo arriba en pantallas pequeñas */
+@media (max-width: 992px) {
+  .sidebar {
+    width: 100%;
+    margin-bottom: 1.5rem;
+  }
+}
+
+
+.main{ min-height:100vh; flex:1 1 auto; min-width:0; }
+
+.context-bar{ background:var(--neutral-300); border:1px solid var(--neutral-300); border-radius:.6rem; padding:.6rem .8rem; }
+.context-bar .label{ color:var(--neutral-700); font-size:.9rem; }
+.context-bar .value{ font-weight:600; }
+.kpi-card{ border:1px solid var(--neutral-300); border-radius:.8rem; padding:1rem; background:#fff; height:100%; }
+.kpi-value{ font-weight:700; font-size:clamp(1.05rem,2vw,1.6rem); }
+.chip{ display:inline-flex; align-items:center; gap:.5rem; padding:.25rem .6rem; border:1px solid var(--neutral-300); border-radius:999px; background:#fff; }
+.dot{ width:.65rem; height:.65rem; border-radius:50%; display:inline-block; }
+
+/* Cards / tables never overflow the viewport */
+.card, .card-body, .table-scroll { max-width:100%; }
+img, canvas, svg { max-width:100%; height:auto; display:block; }
+
+/* Tables with internal scroll */
+.table-scroll{
+    display:block; width:100%; max-width:100%; overflow:auto;
+    -webkit-overflow-scrolling: touch;
+    border:1px solid var(--neutral-300);
+    border-radius:.6rem; background:var(--white); position: relative;
+}
+.table-scroll table{ margin-bottom:0; width:max-content; min-width:100%; }
+.table-dense td, .table-dense th{ padding:.5rem .7rem; }
+.table-scroll thead th{
+    position:sticky; top:0; z-index:5; background:var(--white);
+    border-bottom:1px solid var(--neutral-300);
+}
+/* Minimum widths so horizontal scroll happens inside table only */
+#tblCumpl{ min-width: 2200px; } #tblTr{ min-width: 1100px; } #tblPob{ min-width: 1300px; }
+#tblCole{ min-width: 1200px; } #tblEst{ min-width: 1400px; } #tblHist{ min-width: 900px; }
+#tblAlerta{min-width: 1600px; } #tblSalud{ min-width: 1200px; }
+
+.card-body canvas{ width:100% !important; height:auto !important; }
+
+/* Config modal */
+.modal-body{ max-height: calc(100vh - 200px); overflow:auto; }
+.config-section{ border:1px solid var(--neutral-300); border-radius:.6rem; padding:1rem; background:#fff; }
+.preview-cell{ display:flex; align-items:center; gap:.5rem; }
+.pill{ padding:.15rem .5rem; border-radius:999px; border:1px solid var(--neutral-300); background:#fff; font-size:.85rem; }
+
+@media (max-width: 992px){
+    .app{ flex-direction:column; }
+    .sidebar{ position:relative; top:auto; height:auto; width:100%; max-width:100%; flex:0 0 auto; }
+}
+
+
+/* ==== FOOTER ==== */
+.footer-sena {
+  position: relative;
+  /* Fondo múltiple: primero la imagen, luego el degradado */
+  background-image: 
+    url('../img/FooterModoLight.svg'), 
+    linear-gradient(90deg, var(--sena-primary), var(--neutral-500));
+  background-size: cover, cover;          /* Tamaño de cada fondo */
+  background-position: center, center;    /* Posición de cada fondo */
+  background-repeat: no-repeat, no-repeat;/* Evita repetición de ambos */
+  
+  color: var(--sena-accent);
+  overflow: hidden;
+  border-top-left-radius: 40px;
+  border-top-right-radius: 40px;
+}
+
+.footer-top {
+  position: relative;
+  z-index: 1;
+  max-width: 1200px;
+}
+
+.footer-logo {
+  max-width: 150px;
+}
+
+.footer-title {
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 0.75rem;
+}
+
+.footer-links a {
+  color: rgba(255, 255, 255, 0.85);
+  text-decoration: none;
+}
+
+.footer-links a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.contact-info li {
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.social-links a {
+  font-size: 1.4rem;
+  color: var(--sena-accent);
+  margin-right: 10px;
+  transition: color 0.3s ease;
+}
+
+.social-links a:hover {
+  color: #fff;
+}
+
+.footer-bottom {
+  background: rgba(0,0,0,0.15);
+  color: #f5f9ff;
+  z-index: 1;
+  position: relative;
+}
+
+/* Cabecera de modal con imagen (reemplaza fondo azul) */
+.modal-header.header-image {
+  background-color: var(--sena-secondary); /* fallback color */
+  background-image: url('../assets/img/header-bg.svg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 84px;
+  align-items: center;
+  color: #fff;
+  position: relative;
+}
+.modal-header.header-image::before{
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.25); /* ligera superposición para legibilidad */
+}
+.modal-header.header-image .modal-title{
+  position: relative; /* por encima del overlay */
+  z-index: 2;
+}
+
+/* Si la imagen no existe, mantener texto legible con color de fondo */
+@media (max-width: 576px){
+  .modal-header.header-image{ min-height: 68px; }
+}
+
+
+
+
+/* Estilos para gráficas */
+.avatar {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bg-primary-light {
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+.bg-success-light {
+    background-color: rgba(25, 135, 84, 0.1);
+}
+
+.bg-warning-light {
+    background-color: rgba(255, 193, 7, 0.1);
+}
+
+.bg-danger-light {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Responsive para gráficas */
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        height: 250px;
+    }
+    
+    #cardsResumen .col-md-3 {
+        margin-bottom: 15px;
+    }
+}
+
+
+/* ==================== ESTILOS PARA GRÁFICAS ==================== */
+
+/* Tarjetas de resumen */
+.avatar {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bg-primary-light {
+    background-color: rgba(13, 110, 253, 0.1);
+}
+
+.bg-success-light {
+    background-color: rgba(25, 135, 84, 0.1);
+}
+
+.bg-warning-light {
+    background-color: rgba(255, 193, 7, 0.1);
+}
+
+.bg-danger-light {
+    background-color: rgba(220, 53, 69, 0.1);
+}
+
+/* Colores SENA */
+.text-sena-blue {
+    color: #0056a6;
+}
+
+.bg-sena-blue {
+    background-color: #0056a6;
+}
+
+.bg-sena-green {
+    background-color: #28a745;
+}
+
+.bg-sena-purple {
+    background-color: #6f42c1;
+}
+
+.bg-sena-orange {
+    background-color: #fd7e14;
+}
+
+.btn-sena {
+    background-color: #0056a6;
+    color: white;
+    border: none;
+}
+
+.btn-sena:hover {
+    background-color: #004080;
+    color: white;
+}
+
+.btn-outline-sena {
+    color: #0056a6;
+    border-color: #0056a6;
+}
+
+.btn-outline-sena:hover {
+    background-color: #0056a6;
+    color: white;
+}
+
+/* Animaciones */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Responsive para gráficas */
+.chart-container {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        height: 250px;
+    }
+    
+    #cardsResumen .col-md-3 {
+        margin-bottom: 15px;
+    }
+}
+
+/* Mensajes */
+.alert-fixed {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    z-index: 9999;
+    max-width: 400px;
+}
+
+/* Tarjetas */
+.card {
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+}
+
+/* Botones */
+.btn {
+    border-radius: 6px;
+    font-weight: 500;
+}
+
+/* Formularios */
+.form-select, .form-control {
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+}
+
+.form-select:focus, .form-control:focus {
+    border-color: #0056a6;
+    box-shadow: 0 0 0 0.25rem rgba(0, 86, 166, 0.25);
+}
+
+/* Tablas */
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 86, 166, 0.05);
+}
+
+/* Badges */
+.badge {
+    border-radius: 20px;
+    padding: 5px 12px;
+    font-weight: 500;
+}
+/* css/style.css - ESTILOS COMPLETOS PARA GRÁFICAS */
+:root {
+    --sena-blue: #0072ce;
+    --sena-green: #00a550;
+    --sena-orange: #f7931e;
+    --sena-purple: #662d91;
+    --sena-red: #e63946;
+    --sena-yellow: #ffd166;
+    --sena-teal: #2a9d8f;
+}
+
+/* Colores de texto */
+.text-sena-blue { color: var(--sena-blue) !important; }
+.text-sena-green { color: var(--sena-green) !important; }
+.text-sena-orange { color: var(--sena-orange) !important; }
+.text-sena-purple { color: var(--sena-purple) !important; }
+.text-sena-red { color: var(--sena-red) !important; }
+
+/* Fondos */
+.bg-sena-blue { background-color: var(--sena-blue) !important; }
+.bg-sena-green { background-color: var(--sena-green) !important; }
+.bg-sena-orange { background-color: var(--sena-orange) !important; }
+.bg-sena-purple { background-color: var(--sena-purple) !important; }
+
+/* Botones */
+.btn-sena {
+    background-color: var(--sena-blue);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-sena:hover {
+    background-color: #0059a1;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 114, 206, 0.3);
+}
+
+.btn-sena:active {
+    transform: translateY(0);
+}
+
+.btn-sena-outline {
+    background-color: transparent;
+    color: var(--sena-blue);
+    border: 2px solid var(--sena-blue);
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-sena-outline:hover {
+    background-color: var(--sena-blue);
+    color: white;
+}
+
+/* Tarjetas */
+.card {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+    border-radius: 12px 12px 0 0 !important;
+    font-weight: 600;
+    padding: 1rem 1.25rem;
+}
+
+/* Tarjetas de estadísticas */
+.stat-card {
+    border-radius: 10px;
+    border-left: 5px solid;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.stat-card:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card.border-primary { border-left-color: var(--sena-blue); }
+.stat-card.border-success { border-left-color: var(--sena-green); }
+.stat-card.border-warning { border-left-color: var(--sena-orange); }
+.stat-card.border-danger { border-left-color: var(--sena-red); }
+
+/* Avatares para iconos */
+.avatar {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 1.5rem;
+}
+
+.bg-primary-light { background-color: rgba(0, 114, 206, 0.1); }
+.bg-success-light { background-color: rgba(0, 165, 80, 0.1); }
+.bg-warning-light { background-color: rgba(247, 147, 30, 0.1); }
+.bg-danger-light { background-color: rgba(230, 57, 70, 0.1); }
+.bg-purple-light { background-color: rgba(102, 45, 145, 0.1); }
+
+/* Contenedores de gráficas */
+.chart-container {
+    position: relative;
+    height: 350px;
+    width: 100%;
+}
+
+@media (min-width: 992px) {
+    .chart-container {
+        height: 400px;
+    }
+}
+
+/* Tablas */
+.table th {
+    background-color: #f8f9fa;
+    color: var(--sena-blue);
+    font-weight: 600;
+    border-top: none;
+    padding: 1rem;
+}
+
+.table td {
+    padding: 0.75rem 1rem;
+    vertical-align: middle;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 114, 206, 0.02);
+}
+
+/* Spinners */
+.spinner-border.text-sena-blue {
+    color: var(--sena-blue) !important;
+}
+
+/* Alertas personalizadas */
+.alert-sena {
+    border-radius: 10px;
+    border: none;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Mensaje vacío */
+#mensajeVacio {
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    padding: 3rem;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+/* Utilidades */
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.shadow-sm {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+.shadow-md {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .chart-container {
+        height: 300px;
+    }
+    
+    .card-header {
+        padding: 0.75rem 1rem;
+    }
+    
+    .btn-sena, .btn-sena-outline {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--sena-blue);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #0059a1;
+}
+
+/* ==================== ESTILOS ESPECÍFICOS PARA GRÁFICAS ==================== */
+
+/* Card headers con gradiente SENA */
+.card-header.grafica-header {
+    background: linear-gradient(135deg, #0072ce 0%, #0059a1 100%);
+    color: white;
+    font-weight: 600;
+    border-bottom: none;
+    padding: 1rem 1.25rem;
+}
+
+.card-header.grafica-header h6 {
+    margin-bottom: 0;
+}
+
+/* Contenedores de gráficas */
+.chart-container {
+    position: relative;
+    height: 400px;
+    width: 100%;
+}
+
+/* Tarjetas de estadísticas */
+.stat-card {
+    border-radius: 10px;
+    border-left: 5px solid;
+    transition: all 0.3s;
+    height: 100%;
+    margin-bottom: 1rem;
+}
+
+.stat-card:hover {
+    box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+}
+
+.stat-card.border-primary { border-left-color: #0072ce; }
+.stat-card.border-success { border-left-color: #00a550; }
+.stat-card.border-warning { border-left-color: #f7931e; }
+.stat-card.border-danger { border-left-color: #e63946; }
+
+/* Botones SENA */
+.btn-sena {
+    background: linear-gradient(135deg, #0072ce 0%, #0059a1 100%);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-sena:hover {
+    background: linear-gradient(135deg, #0059a1 0%, #004080 100%);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 114, 206, 0.3);
+}
+
+.btn-sena:active {
+    transform: translateY(0);
+}
+
+.btn-sena-outline {
+    background: transparent;
+    color: #0072ce;
+    border: 2px solid #0072ce;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.btn-sena-outline:hover {
+    background: #0072ce;
+    color: white;
+}
+
+/* Loading spinner */
+.loading-spinner {
+    display: none;
+    text-align: center;
+    padding: 40px;
+}
+
+.loading-spinner .spinner-border.text-sena-blue {
+    color: #0072ce !important;
+}
+
+/* Mensaje vacío */
+#mensajeVacio {
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8f9fa;
+    border-radius: 12px;
+    padding: 3rem;
+}
+
+#mensajeVacio i {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.5;
+}
+
+/* Colores específicos para gráficas */
+.bg-sena-blue { background-color: #0072ce !important; }
+.bg-sena-green { background-color: #00a550 !important; }
+.bg-sena-orange { background-color: #f7931e !important; }
+.bg-sena-purple { background-color: #662d91 !important; }
+
+.text-sena-blue { color: #0072ce !important; }
+.text-sena-green { color: #00a550 !important; }
+
+/* Avatares para iconos */
+.avatar {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    font-size: 1.5rem;
+}
+
+.bg-primary-light { background-color: rgba(0, 114, 206, 0.1); }
+.bg-success-light { background-color: rgba(0, 165, 80, 0.1); }
+.bg-warning-light { background-color: rgba(247, 147, 30, 0.1); }
+.bg-danger-light { background-color: rgba(230, 57, 70, 0.1); }
+.bg-purple-light { background-color: rgba(102, 45, 145, 0.1); }
+
+/* Tablas de datos */
+.table th {
+    background-color: #f8f9fa;
+    color: #0072ce;
+    font-weight: 600;
+    border-top: none;
+    padding: 1rem;
+}
+
+/* Dropdowns */
+.dropdown-menu {
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.dropdown-item {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    margin: 2px 8px;
+    width: calc(100% - 16px);
+}
+
+.dropdown-item:hover {
+    background-color: #f8f9fa;
+}
+
+/* Paginación */
+.pagination .page-link {
+    border: none;
+    border-radius: 6px;
+    margin: 0 3px;
+    color: #0072ce;
+    font-weight: 500;
+}
+
+.pagination .page-link:hover {
+    background-color: #f0f7ff;
+    color: #0059a1;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #0072ce;
+    border-color: #0072ce;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .chart-container {
+        height: 300px;
+    }
+    
+    .card-header.grafica-header {
+        padding: 0.75rem 1rem;
+    }
+    
+    .btn-sena, .btn-sena-outline {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+    
+    .stat-card .avatar {
+        width: 40px;
+        height: 40px;
+        font-size: 1.25rem;
+    }
+    
+    #mensajeVacio {
+        padding: 2rem;
+        min-height: 300px;
+    }
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+/* Botones grandes en mensaje vacío */
+#mensajeVacio .btn-lg {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+}
+
+/* Asegurar que los canvas sean responsivos */
+canvas {
+    max-width: 100%;
+    height: auto !important;
+}

@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SENA - Dashboard de Indicadores</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Estilos locales -->
+    <link rel="stylesheet" href="css/style.css">
+
+    <style>
+        .chart-container {
+            position: relative;
+            height: 350px;
+            width: 100%;
+        }
+        
+        .card-chart {
+            transition: transform 0.2s;
+        }
+        
+        .card-chart:hover {
+            transform: translateY(-5px);
+        }
+        
+        .nav-tabs .nav-link {
+            font-weight: 500;
+        }
+        
+        .nav-tabs .nav-link.active {
+            background-color: #0072CE;
+            color: white;
+            border-color: #0072CE;
+        }
+        
+        .bg-sena-blue {
+            background-color: #0072CE !important;
+        }
+        
+        .text-sena-blue {
+            color: #0072CE !important;
+        }
+        
+        .btn-sena {
+            background-color: #0072CE;
+            border-color: #0072CE;
+            color: white;
+        }
+        
+        .btn-sena:hover {
+            background-color: #005ba1;
+            border-color: #005ba1;
+            color: white;
+        }
+        
+        .btn-sena-outline {
+            color: #0072CE;
+            border-color: #0072CE;
+        }
+        
+        .btn-sena-outline:hover {
+            background-color: #0072CE;
+            color: white;
+        }
+        
+        .border-sena-blue {
+            border-color: #0072CE !important;
+        }
+        
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .bg-primary-light {
+            background-color: rgba(0, 114, 206, 0.1) !important;
+        }
+        
+        .bg-success-light {
+            background-color: rgba(0, 165, 80, 0.1) !important;
+        }
+        
+        .bg-warning-light {
+            background-color: rgba(247, 147, 30, 0.1) !important;
+        }
+        
+        .bg-danger-light {
+            background-color: rgba(230, 57, 70, 0.1) !important;
+        }
+        
+        .version-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+        }
+        
+        .comparativa-card {
+            border-left: 4px solid #0072CE;
+        }
+        /* Estilos del selector de mundos */
+        
+        .world-card {
+            transition: all 0.3s ease;
+            border-width: 2px;
+            border-radius: 0.75rem;
+            height: 100%;
+        }
+        
+        .world-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15)!important;
+        }
+        
+        .hover-shadow:hover {
+            transform: translateY(-2px);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15)!important;
+        }
+        
+        .form-control:focus,
+        .form-select:focus {
+            border-color: #86b7fe;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
+        }
+        
+        .accordion-button:focus {
+            box-shadow: none;
+            border-color: #dee2e6;
+        }
+        
+        .table th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #dee2e6;
+        }
+        
+        .badge {
+            font-weight: 500;
+            padding: 0.35em 0.65em;
+        }
+        
+        .btn {
+            border-radius: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .page-link {
+            border-radius: 0.375rem;
+            margin: 0 2px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container-fluid py-3">
+        <!-- Selector de mundos -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="row g-3">
+                    <div class="col-lg-3 col-md-6">
+                        <a href="#programas" class="text-decoration-none">
+                            <div class="card border-primary shadow-sm world-card">
+                                <div class="card-body text-center p-4">
+                                    <i class="bi bi-book text-primary display-5 mb-2"></i>
+                                    <h6 class="fw-bold m-0">Programas de Formación</h6>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <a href="#indicadores" class="text-decoration-none">
+                            <div class="card border-success shadow-sm world-card">
+                                <div class="card-body text-center p-4">
+                                    <i class="bi bi-bar-chart-line text-success display-5 mb-2"></i>
+                                    <h6 class="fw-bold m-0">Indicadores de Desempeño</h6>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <a href="#registro" class="text-decoration-none">
+                            <div class="card border-warning shadow-sm world-card">
+                                <div class="card-body text-center p-4">
+                                    <i class="bi bi-file-earmark-text text-warning display-5 mb-2"></i>
+                                    <h6 class="fw-bold m-0">Registro Calificado</h6>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6">
+                        <a href="#reportes" class="text-decoration-none">
+                            <div class="card border-danger shadow-sm world-card">
+                                <div class="card-body text-center p-4">
+                                    <i class="bi bi-pie-chart text-danger display-5 mb-2"></i>
+                                    <h6 class="fw-bold m-0">Gráficas</h6>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Encabezado -->
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h1 class="h2 fw-bold text-sena-blue">
+                    <i class="bi bi-bar-chart-fill me-2"></i>Dashboard de Indicadores SENA
+                </h1>
+                <p class="text-muted mb-0">Análisis y comparativa por programa y versión</p>
+                <small class="text-muted">
+                    <i class="bi bi-info-circle me-1"></i>Selecciona un programa para comparar versiones
+                </small>
+            </div>
+            <div class="col-md-4 text-end">
+                <div class="btn-group" role="group">
+                    <button id="btnExportarDashboard" class="btn btn-sena-outline me-2">
+                        <i class="bi bi-download me-1"></i> Exportar
+                    </button>
+                    <button id="btnRefrescar" class="btn btn-outline-sena">
+                        <i class="bi bi-arrow-clockwise me-1"></i> Refrescar
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="card shadow-sm mb-4 border-0">
+            <div class="card-body">
+                <h5 class="card-title text-sena-blue mb-3">
+                    <i class="bi bi-funnel me-2"></i>Filtros de Búsqueda
+                </h5>
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-5">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-mortarboard me-1"></i> Programa de Formación
+                        </label>
+                        <select id="selectPrograma" class="form-select form-select-lg shadow-none">
+                            <option value="">Selecciona un programa...</option>
+                        </select>
+                        <small class="form-text text-muted">Programas con múltiples versiones disponibles</small>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-123 me-1"></i> Versión Específica
+                        </label>
+                        <select id="selectVersion" class="form-select shadow-none">
+                            <option value="">Todas las versiones (Comparar)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-graph-up me-1"></i> Vista Principal
+                        </label>
+                        <select id="selectTipo" class="form-select shadow-none">
+                            <option value="bar">Barras</option>
+                            <option value="line">Línea</option>
+                            <option value="pie">Circular</option>
+                            <option value="doughnut">Dona</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-flex align-items-end">
+                        <div class="d-flex w-100 gap-2">
+                            <button id="btnCargar" class="btn btn-sena flex-grow-1">
+                                <i class="bi bi-eye me-1"></i> Analizar
+                            </button>
+                            <button id="btnLimpiar" class="btn btn-outline-danger" title="Limpiar filtros">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-3 text-center" id="loadingSpinner" style="display: none;">
+                    <div class="spinner-border text-sena-blue" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <span class="ms-2 text-muted">Analizando datos...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Información del Programa -->
+        <div class="card shadow-sm mb-4 border-0" id="infoProgramaCard" style="display: none;">
+            <div class="card-header bg-sena-blue text-white">
+                <h6 class="mb-0">
+                    <i class="bi bi-info-circle me-2"></i>Información del Programa
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 id="nombrePrograma" class="fw-bold mb-2">...</h5>
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="badge bg-sena-blue me-2" id="codigoPrograma">...</span>
+                            <span class="text-muted" id="versionesDisponibles">...</span>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <div class="d-flex flex-wrap justify-content-end gap-2" id="badgesVersiones">
+                            <!-- Badges de versiones se llenarán dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjetas de Resumen -->
+        <div class="row mb-4 g-3" id="cardsResumen" style="display: none;">
+            <div class="col-xl-3 col-lg-6">
+                <div class="card border-0 shadow-sm h-100 hover-shadow">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-2">Total Participantes</h6>
+                                <h2 id="cardTotal" class="mb-0 text-dark fw-bold">0</h2>
+                                <small class="text-muted">
+                                    <i class="bi bi-people me-1"></i>
+                                    <span id="cardFichas">0</span> fichas
+                                </small>
+                            </div>
+                            <div class="bg-primary-light rounded-3 p-3">
+                                <i class="bi bi-people-fill fs-3 text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-6">
+                <div class="card border-0 shadow-sm h-100 hover-shadow">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-2">Indígenas</h6>
+                                <h2 id="cardIndigenas" class="mb-0 text-dark fw-bold">0</h2>
+                                <small class="text-success">
+                                    <i class="bi bi-person-heart me-1"></i>
+                                    <span id="cardIndigenasPorc">0%</span> del total
+                                </small>
+                            </div>
+                            <div class="bg-success-light rounded-3 p-3">
+                                <i class="bi bi-person-hearts fs-3 text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-6">
+                <div class="card border-0 shadow-sm h-100 hover-shadow">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-2">Afrodescendientes</h6>
+                                <h2 id="cardAfro" class="mb-0 text-dark fw-bold">0</h2>
+                                <small class="text-warning">
+                                    <i class="bi bi-person-vcard me-1"></i>
+                                    <span id="cardAfroPorc">0%</span> del total
+                                </small>
+                            </div>
+                            <div class="bg-warning-light rounded-3 p-3">
+                                <i class="bi bi-person-vcard fs-3 text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-lg-6">
+                <div class="card border-0 shadow-sm h-100 hover-shadow">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-2">Con Discapacidad</h6>
+                                <h2 id="cardDiscapacidad" class="mb-0 text-dark fw-bold">0</h2>
+                                <small class="text-danger">
+                                    <i class="bi bi-wheelchair me-1"></i>
+                                    <span id="cardDiscapacidadPorc">0%</span> del total
+                                </small>
+                            </div>
+                            <div class="bg-danger-light rounded-3 p-3">
+                                <i class="bi bi-wheelchair fs-3 text-danger"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navegación por Tabs para las Gráficas -->
+        <div class="card shadow-sm mb-4 border-0" id="graficasTabsContainer" style="display: none;">
+            <div class="card-header p-0 border-0">
+                <ul class="nav nav-tabs" id="graficasTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="tab-resumen" data-bs-toggle="tab" data-bs-target="#resumen-tab-pane" type="button" role="tab">
+                            <i class="bi bi-bar-chart-line me-2"></i>Resumen
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-comparativa" data-bs-toggle="tab" data-bs-target="#comparativa-tab-pane" type="button" role="tab">
+                            <i class="bi bi-arrow-left-right me-2"></i>Comparativa
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-tendencias" data-bs-toggle="tab" data-bs-target="#tendencias-tab-pane" type="button" role="tab">
+                            <i class="bi bi-graph-up me-2"></i>Tendencias
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-distribucion" data-bs-toggle="tab" data-bs-target="#distribucion-tab-pane" type="button" role="tab">
+                            <i class="bi bi-pie-chart me-2"></i>Distribución
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="tab-detalle" data-bs-toggle="tab" data-bs-target="#detalle-tab-pane" type="button" role="tab">
+                            <i class="bi bi-table me-2"></i>Detalle por Ficha
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body p-3">
+                <div class="tab-content" id="graficasTabsContent">
+
+                    <!-- Tab 1: Resumen -->
+                    <div class="tab-pane fade show active" id="resumen-tab-pane" role="tabpanel" tabindex="0">
+                        <div class="row g-4">
+                            <!-- Gráfica 1: Indicadores Principales -->
+                            <div class="col-lg-6">
+                                <div class="card shadow-sm h-100 card-chart border-0">
+                                    <div class="card-header d-flex justify-content-between align-items-center border-0 bg-white">
+                                        <h6 class="mb-0 fw-bold">
+                                            <i class="bi bi-bar-chart-line me-2"></i>Indicadores Principales
+                                        </h6>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-sena dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                <i class="bi bi-gear me-1"></i>Opciones
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a class="dropdown-item" href="#" onclick="cambiarTipoGrafica('bar')">
+                                                        <i class="bi bi-bar-chart me-2"></i>Barras
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="#" onclick="cambiarTipoGrafica('line')">
+                                                        <i class="bi bi-graph-up me-2"></i>Línea
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="#" onclick="descargarGrafica('chartTotales')">
+                                                        <i class="bi bi-download me-2"></i>Descargar
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-container">
+                                            <canvas id="chartTotales"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Gráfica 2: Distribución por Grupos Étnicos -->
+                            <div class="col-lg-6">
+                                <div class="card shadow-sm h-100 card-chart border-0">
+                                    <div class="card-header border-0 bg-white">
+                                        <h6 class="mb-0 fw-bold">
+                                            <i class="bi bi-people-fill me-2"></i>Distribución por Grupos Étnicos
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-container">
+                                            <canvas id="chartEtnicos"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Comparativa -->
+                    <div class="tab-pane fade" id="comparativa-tab-pane" role="tabpanel" tabindex="0">
+                        <div class="alert alert-info mb-4 border-0">
+                            <i class="bi bi-info-circle me-2"></i> Comparativa entre diferentes versiones del mismo programa
+                        </div>
+
+                        <div class="row g-4">
+                            <!-- Gráfica 3: Comparativa de Versiones -->
+                            <div class="col-lg-6">
+                                <div class="card shadow-sm h-100 card-chart comparativa-card border-0">
+                                    <div class="card-header d-flex justify-content-between align-items-center border-0 bg-white">
+                                        <h6 class="mb-0 fw-bold">
+                                            <i class="bi bi-arrow-left-right me-2"></i>Comparativa de Versiones
+                                        </h6>
+                                        <div class="dropdown">
+                                            <button class="btn btn-sm btn-outline-sena dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                <i class="bi bi-gear me-1"></i>Opciones
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a class="dropdown-item" href="#" onclick="cambiarTipoGraficaEspecifica('chartComparativaVersiones', 'bar')">
+                                                        <i class="bi bi-bar-chart me-2"></i>Barras
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="#" onclick="cambiarTipoGraficaEspecifica('chartComparativaVersiones', 'line')">
+                                                        <i class="bi bi-graph-up me-2"></i>Línea
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <hr class="dropdown-divider">
+                                                </li>
+                                                <li>
+                                                    <a class="dropdown-item" href="#" onclick="descargarGrafica('chartComparativaVersiones')">
+                                                        <i class="bi bi-download me-2"></i>Descargar
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-container">
+                                            <canvas id="chartComparativaVersiones"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Gráfica 4: Crecimiento por Versión -->
+                            <div class="col-lg-6">
+                                <div class="card shadow-sm h-100 card-chart comparativa-card border-0">
+                                    <div class="card-header border-0 bg-white">
+                                        <h6 class="mb-0 fw-bold">
+                                            <i class="bi bi-arrow-up-right me-2"></i>Crecimiento por Versión
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-container">
+                                            <canvas id="chartCrecimiento"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tabla de Comparativa -->
+                            <div class="col-12">
+                                <div class="card shadow-sm border-0">
+                                    <div class="card-header border-0 bg-white">
+                                        <h6 class="mb-0 fw-bold">
+                                            <i class="bi bi-table me-2"></i>Tabla Comparativa Detallada
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>Versión</th>
+                                                        <th class="text-end">Total Participantes</th>
+                                                        <th class="text-end">Fichas</th>
+                                                        <th class="text-end">Indígenas</th>
+                                                        <th class="text-end">Afrodescendientes</th>
+                                                        <th class="text-end">Con Discapacidad</th>
+                                                        <th class="text-end">% Diversidad</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tablaComparativa">
+                                                    <!-- Se llena con JavaScript -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 3: Tendencias -->
+                    <div class="tab-pane fade" id="tendencias-tab-pane" role="tabpanel" tabindex="0">
+                        <div class="row g-4">
+                            <!-- Gráfica 5: Tendencias Históricas -->
+                            <div class="col-lg-6">
+                                <div class="card shadow-sm h-100 card-chart border-0">
+                                    <div class="card-header border-0 bg-white">
+                                        <h6 class="mb-0 fw-bold">
+                                            <i class="bi bi-graph-up me-2"></i>Tendencias Históricas
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-container">
+                                            <canvas id="chartTendencias"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Gráfica 6: Evolución de Grupos Étnicos -->
+                            <div class="col-lg-6">
+                                <div class="card shadow-sm h-100 card-chart border-0">
+                                    <div class="card-header border-0 bg-white">
+                                        <h6 class="mb-0 fw-bold">
+                                            <i class="bi bi-trending-up me-2"></i>Evolución de Grupos Étnicos
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-container">
+                                            <canvas id="chartTendenciasDetalladas"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 4: Distribución -->
+                    <div class="tab-pane fade" id="distribucion-tab-pane" role="tabpanel" tabindex="0">
+                        <div class="row g-4">
+                            <!-- Gráfica 7: Distribución Porcentual -->
+                            <div class="col-lg-6">
+                                <div class="card shadow-sm h-100 card-chart border-0">
+                                    <div class="card-header border-0 bg-white">
+                                        <h6 class="mb-0 fw-bold">
+                                            <i class="bi bi-pie-chart-fill me-2"></i>Distribución Porcentual
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-container">
+                                            <canvas id="chartDistribucion"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Gráfica 8: Análisis por Categorías -->
+                            <div class="col-lg-6">
+                                <div class="card shadow-sm h-100 card-chart border-0">
+                                    <div class="card-header border-0 bg-white">
+                                        <h6 class="mb-0 fw-bold">
+                                            <i class="bi bi-diagram-3 me-2"></i>Análisis por Categorías
+                                        </h6>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-container">
+                                            <canvas id="chartCategorias"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tab 5: Detalle por Ficha -->
+                    <div class="tab-pane fade" id="detalle-tab-pane" role="tabpanel" tabindex="0">
+                        <div class="row g-4">
+                            <div class="col-12">
+                                <div class="card shadow-sm border-0">
+                                    <div class="card-header d-flex justify-content-between align-items-center border-0 bg-white">
+                                        <h6 class="mb-0 fw-bold">
+                                            <i class="bi bi-table me-2"></i>Detalle por Ficha
+                                        </h6>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-sena-outline" onclick="exportarCSV()">
+                                                <i class="bi bi-file-earmark-spreadsheet me-1"></i> Exportar CSV
+                                            </button>
+                                            <button class="btn btn-sm btn-sena-outline" onclick="imprimirTabla()">
+                                                <i class="bi bi-printer me-1"></i> Imprimir
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="table-responsive">
+                                            <table class="table table-hover">
+                                                <thead class="table-light">
+                                                    <tr>
+                                                        <th>Ficha</th>
+                                                        <th>Versión</th>
+                                                        <th class="text-end">Total Participantes</th>
+                                                        <th class="text-end">Indígenas</th>
+                                                        <th class="text-end">Afrodescendientes</th>
+                                                        <th class="text-end">Negros</th>
+                                                        <th class="text-end">Discapacidad</th>
+                                                        <th class="text-end">% Étnico</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="tablaDatos">
+                                                    <!-- Se llena con JavaScript -->
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="card-footer text-end border-0 bg-white">
+                <small class="text-muted">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Usa las pestañas para navegar entre los diferentes tipos de análisis
+                </small>
+            </div>
+        </div>
+
+        <!-- Mensaje vacío -->
+        <div class="text-center py-5" id="mensajeVacio">
+            <div class="mb-4">
+                <i class="bi bi-bar-chart fs-1 text-sena-blue opacity-50"></i>
+            </div>
+            <h3 class="text-muted mb-3">Dashboard de Indicadores SENA</h3>
+            <p class="text-muted mb-4">Selecciona un programa para comparar versiones y analizar indicadores.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <button class="btn btn-lg btn-outline-sena" onclick="document.getElementById('selectPrograma').focus()">
+                    <i class="bi bi-search me-2"></i> Buscar Programa
+                </button>
+                <button class="btn btn-lg btn-sena" onclick="cargarProgramasConVersiones()">
+                    <i class="bi bi-arrow-repeat me-2"></i> Cargar Programas
+                </button>
+            </div>
+            <div class="mt-5">
+                <h6 class="text-muted mb-3">Características principales:</h6>
+                <div class="row justify-content-center">
+                    <div class="col-auto">
+                        <span class="badge bg-sena-blue me-2 mb-2">
+                            <i class="bi bi-arrow-left-right me-1"></i> Comparativa de versiones
+                        </span>
+                    </div>
+                    <div class="col-auto">
+                        <span class="badge bg-success me-2 mb-2">
+                            <i class="bi bi-graph-up me-1"></i> Análisis de tendencias
+                        </span>
+                    </div>
+                    <div class="col-auto">
+                        <span class="badge bg-warning me-2 mb-2">
+                            <i class="bi bi-pie-chart me-1"></i> Distribución porcentual
+                        </span>
+                    </div>
+                    <div class="col-auto">
+                        <span class="badge bg-danger me-2 mb-2">
+                            <i class="bi bi-table me-1"></i> Detalle por ficha
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- SCRIPT DEL MÓDULO - IMPORTANTE: type="module" -->
+    <script type="module" src="./js/pages/graficas.js"></script>
+
+    <script>
+        // Funciones adicionales para el HTML
+        function exportarCSV() {
+            alert('Funcionalidad de exportar CSV - Implementar según necesidades');
+        }
+
+        function imprimirTabla() {
+            window.print();
+        }
+
+        // Botón refrescar
+        const btnRef = document.getElementById('btnRefrescar');
+        if (btnRef) btnRef.addEventListener('click', function() {
+            location.reload();
+        });
+
+        // Botón exportar dashboard
+        const btnExportDash = document.getElementById('btnExportarDashboard');
+        if (btnExportDash) btnExportDash.addEventListener('click', function() {
+            alert('Funcionalidad de exportar dashboard - Implementar según necesidades');
+        });
+
+        // Función para cargar programas con versiones
+        function cargarProgramasConVersiones() {
+            if (typeof window.cargarProgramasReales === 'function') {
+                window.cargarProgramasReales();
+            }
+        }
+    </script>
+
+</body>
+
+</html>

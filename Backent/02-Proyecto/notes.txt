@@ -1,0 +1,116 @@
+
+- CREAR ENTORNO VIRUTAL
+python -m venv venv
+
+
+
+- ACTIVAR ENTORNO
+venv\Scripts\activate
+
+
+
+- INSTALACION FASTAPI
+py -m pip install "fastapi[standard]"
+pip install "fastapi[standard]"
+
+
+
+- LEVANTAR SERVIDOR 
+Set-ExecutionPolicy RemoteSigned -Scope Process
+uvicorn main:app --reload
+py -m uvicorn main:app --reload
+
+- PROBAR CONEXION A LA BD
+python
+
+from core.database import engine
+print(engine)
+
+
+
+
+- DOCUMENTACION
+http://127.0.0.1:8000/docs
+
+
+
+
+
+- __init__.py
+Marca la carpeta core como un paquete de Python.
+Sin este archivo, Python no reconocería core como un módulo importable
+
+- config.py
+Carga y organiza todas las variables del entorno (.env)
+para que sean fáciles de usar en el código
+
+database.py
+Se conecta a la base de datos y prepara todo lo necesario
+para que las rutas (endpoints) puedan usarla.
+
+
+BASE DE DATOS A LA QUE VAMOS A CONECTAR
+https://aiven.io/mysql y WYSQL WORKBENCH
+
+
+
+
+
+
+
+clase 05/11/2025
+
+
+AIVEN, + WORKBRENCH para que
+sevisar datos tambien hubo modificaciones
+
+
+
+se bloqueo para que no todos puedan crear usuarios en router usuarios
+ver si crea usuario con token
+
+
+revisar que no deje crear un usuario y que luego cuando de el permiso deje, deberia decir usuario no encontrado y con el manual se soluciona
+
+
+poner todos los endpoint activados
+
+
+ya deberia crear usuario correctamente
+
+solucionar problema en router/usuarios, linea 36
+
+que es un endpoint, 
+
+asegurar todos los endpoint con token y asegurarse que siguen funcionando
+
+
+
+
+SOLUCION VS Code tiene seleccionado el Python global
+
+Haz esto paso a paso:
+
+En VS Code presiona:
+Ctrl + Shift + P
+Escribe:
+Python: Select Interpreter
+Luego haz clic en
+“Enter interpreter path...”
+y después en
+“Find…”
+Navega a la carpeta de tu proyecto:
+C:\Users\Moncayo\Desktop\Cerebrito\12 Fast API\SoftData-Profesor-Ult\venv\Scripts\
+Selecciona el archivo:
+python.exe
+Ahora VS Code usará tu entorno virtual (venv), donde ya está instalado SQLAlchemy.
+Finalmente:
+Presiona Ctrl + Shift + P
+Escribe “Python: Restart Language Server”
+
+
+pip install pandas
+con este e que hacemos el paso de informacion a la bd, convertir los datos para procesarlos, sirve para analizar datos tambien
+
+los archivos que envia diego se pegan en crud y router
+

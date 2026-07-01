@@ -1,0 +1,516 @@
+<!-- Aplicación -->
+<div class="app d-flex">
+    <!-- Sidebar de filtros -->
+    <div class="sidebar-custom p-4 border-end bg-white shadow-sm" style="width: 280px; min-height: 100vh;">
+        <!-- TÍTULO -->
+        <div class="d-flex align-items-center mb-4">
+            <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                <i class="bi bi-funnel text-primary fs-5"></i>
+            </div>
+            <div>
+                <h5 class="fw-bold text-dark mb-0">Filtros de Registros</h5>
+                <small class="text-muted">Filtra registros calificados</small>
+            </div>
+        </div>
+
+        <div class="accordion" id="filtrosAccordionRegistros">
+            <!-- 📋 FILTROS DE REGISTRO CALIFICADO -->
+            <div class="accordion-item border-0 mb-3">
+                <h2 class="accordion-header">
+                    <button class="accordion-button rounded-3 collapsed shadow-none border bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRegistros">
+                        <div class="d-flex align-items-center w-100">
+                            <i class="bi bi-file-earmark-check text-primary me-2"></i>
+                            <span class="fw-semibold">Filtros de Registros</span>
+                        </div>
+                    </button>
+                </h2>
+
+                <div id="collapseRegistros" class="accordion-collapse collapse" data-bs-parent="#filtrosAccordionRegistros">
+                    <div class="accordion-body pt-3 px-2">
+
+                        <!-- Código Programa -->
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold text-secondary mb-2">
+                                <i class="bi bi-hash me-1"></i>Código Programa
+                            </label>
+                            <div class="input-group input-group-sm">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="bi bi-search text-muted"></i>
+                                </span>
+                                <input type="text" class="form-control border-start-0" id="filtroCodigoRegistro" placeholder="Ej: PROG001" oninput="aplicarFiltrosRegistros()">
+                            </div>
+                        </div>
+
+                        <!-- Tipo Trámite -->
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold text-secondary mb-2">
+                                <i class="bi bi-clipboard-check me-1"></i>Tipo de Trámite
+                            </label>
+                            <select class="form-select form-select-sm shadow-none" id="filtroTipoTramite" onchange="aplicarFiltrosRegistros()">
+                                <option value="">Todos</option>
+                                <option value="inicial">Registro Inicial</option>
+                                <option value="renovacion">Renovación</option>
+                                <option value="modificacion">Modificación</option>
+                            </select>
+                        </div>
+
+                        <!-- Modalidad -->
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold text-secondary mb-2">
+                                <i class="bi bi-laptop me-1"></i>Modalidad
+                            </label>
+                            <select class="form-select form-select-sm shadow-none" id="filtroModalidad" onchange="aplicarFiltrosRegistros()">
+                                <option value="">Todas</option>
+                                <option value="presencial">Presencial</option>
+                                <option value="virtual">Virtual</option>
+                                <option value="mixta">Mixta</option>
+                            </select>
+                        </div>
+
+                        <!-- Estado Catálogo -->
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold text-secondary mb-2">
+                                <i class="bi bi-check-circle me-1"></i>Estado Catálogo
+                            </label>
+                            <select class="form-select form-select-sm shadow-none" id="filtroEstadoCatalogo" onchange="aplicarFiltrosRegistros()">
+                                <option value="">Todos</option>
+                                <option value="aprobado" class="text-success">● Aprobado</option>
+                                <option value="denegado" class="text-danger">● Denegado</option>
+                                <option value="en_estudio" class="text-warning">● En estudio</option>
+                                <option value="pendiente" class="text-secondary">● Pendiente</option>
+                            </select>
+                        </div>
+
+                        <!-- Rango Fechas Vencimiento -->
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold text-secondary mb-2">
+                                <i class="bi bi-calendar-date me-1"></i>Vencimiento
+                            </label>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <input type="date" class="form-control form-control-sm" id="filtroFechaDesde" onchange="aplicarFiltrosRegistros()">
+                                    <small class="text-muted">Desde</small>
+                                </div>
+                                <div class="col-6">
+                                    <input type="date" class="form-control form-control-sm" id="filtroFechaHasta" onchange="aplicarFiltrosRegistros()">
+                                    <small class="text-muted">Hasta</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Clasificación -->
+                        <div class="mb-3">
+                            <label class="form-label small fw-semibold text-secondary mb-2">
+                                <i class="bi bi-tags me-1"></i>Clasificación
+                            </label>
+                            <select class="form-select form-select-sm shadow-none" id="filtroClasificacion" onchange="aplicarFiltrosRegistros()">
+                                <option value="">Todas</option>
+                                <option value="academica">Académica</option>
+                                <option value="tecnica">Técnica</option>
+                                <option value="tecnologica">Tecnológica</option>
+                            </select>
+                        </div>
+
+                        <!-- Botones de acción -->
+                        <div class="d-grid gap-2 mt-4">
+                            <button class="btn btn-primary btn-sm" onclick="cargarRegistrosCalificados()">
+                                <i class="bi bi-arrow-clockwise me-2"></i>Aplicar Filtros
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm" onclick="limpiarFiltrosRegistros()">
+                                <i class="bi bi-x-lg me-2"></i>Limpiar Filtros
+                            </button>
+                        </div>
+
+                        <!-- Contador -->
+                        <div class="mt-4 pt-3 border-top">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="small text-muted">Resultados:</span>
+                                <span class="badge bg-primary bg-opacity-10 text-primary">
+                                    <span id="contadorRegistros" class="fw-bold">0</span> registros
+                                </span>
+                            </div>
+                            <div class="small text-center">
+                                <div id="badgeFiltrosRegistros" class="badge bg-light text-dark border px-3 py-1">
+                                    <i class="bi bi-funnel me-1"></i>0 filtros activos
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+    <main class="flex-grow-1 p-4 bg-light">
+        <!-- Encabezado -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="fw-bold text-dark mb-1">Registro Calificado</h2>
+                <p class="text-muted mb-0">Gestión de registros y certificaciones de programas</p>
+            </div>
+            <div>
+                <button class="btn btn-primary" id="btnFlotanteRegistros">
+                    <i class="bi bi-plus-lg me-2"></i>Nuevo Registro
+                </button>
+            </div>
+        </div>
+
+        <!-- Cards de Estadísticas - Registro Calificado -->
+        <div class="row g-3 mb-4">
+            <!-- Tarjeta 1: Total Registros -->
+            <div class="col-xl-3 col-lg-6">
+                <div class="card border-0 shadow-sm h-100 hover-shadow">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-2">Total Registros</h6>
+                                <h2 class="mb-0 text-dark" id="totalRegistros">0</h2>
+                                <small class="text-muted" id="detalleTotalRegistros">
+                                    <i class="bi bi-info-circle me-1"></i>Cargando...
+                                </small>
+                            </div>
+                            <div class="bg-primary bg-opacity-10 rounded-3 p-3">
+                                <i class="bi bi-file-earmark-check fs-3 text-primary"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta 2: Aprobados -->
+            <div class="col-xl-3 col-lg-6">
+                <div class="card border-0 shadow-sm h-100 hover-shadow">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-2">Registros Aprobados</h6>
+                                <h2 class="mb-0 text-dark" id="registrosAprobados">0</h2>
+                                <small class="text-success" id="porcentajeAprobados">
+                                    <i class="bi bi-arrow-up-right me-1"></i>Calculando...
+                                </small>
+                            </div>
+                            <div class="bg-success bg-opacity-10 rounded-3 p-3">
+                                <i class="bi bi-check-circle fs-3 text-success"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta 3: Por Vencer -->
+            <div class="col-xl-3 col-lg-6">
+                <div class="card border-0 shadow-sm h-100 hover-shadow">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-2">Por Vencer</h6>
+                                <h2 class="mb-0 text-dark" id="registrosPorVencer">0</h2>
+                                <small class="text-warning" id="detallePorVencer">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>Requieren atención
+                                </small>
+                            </div>
+                            <div class="bg-warning bg-opacity-10 rounded-3 p-3">
+                                <i class="bi bi-exclamation-triangle fs-3 text-warning"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tarjeta 4: Renovaciones -->
+            <div class="col-xl-3 col-lg-6">
+                <div class="card border-0 shadow-sm h-100 hover-shadow">
+                    <div class="card-body p-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="text-muted mb-2">Pendientes Renovación</h6>
+                                <h2 class="mb-0 text-dark" id="pendientesRenovacion">0</h2>
+                                <small class="text-danger" id="detalleRenovaciones">
+                                    <i class="bi bi-calendar-check me-1"></i>Ver vencimientos
+                                </small>
+                            </div>
+                            <div class="bg-danger bg-opacity-10 rounded-3 p-3">
+                                <i class="bi bi-calendar-x fs-3 text-danger"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Selector de mundos -->
+        <div class="row g-3 mb-4">
+            <div class="col-lg-3 col-md-6">
+                <a href="#programas" class="text-decoration-none">
+                    <div class="card border-primary shadow-sm world-card">
+                        <div class="card-body text-center p-4">
+                            <i class="bi bi-book text-primary display-5 mb-2"></i>
+                            <h6 class="fw-bold m-0">Programas de Formación</h6>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <a href="#indicadores" class="text-decoration-none">
+                    <div class="card border-success shadow-sm world-card">
+                        <div class="card-body text-center p-4">
+                            <i class="bi bi-bar-chart-line text-success display-5 mb-2"></i>
+                            <h6 class="fw-bold m-0">Indicadores</h6>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <a href="#registro" class="text-decoration-none">
+                    <div class="card border-warning shadow-sm world-card">
+                        <div class="card-body text-center p-4">
+                            <i class="bi bi-file-earmark-text text-warning display-5 mb-2"></i>
+                            <h6 class="fw-bold m-0">Registro Calificado</h6>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <a href="#graficas" class="text-decoration-none">
+                    <div class="card border-danger shadow-sm world-card">
+                        <div class="card-body text-center p-4">
+                            <i class="bi bi-pie-chart text-danger display-5 mb-2"></i>
+                            <h6 class="fw-bold m-0">Gráficas</h6>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Tabla de Registros Calificados -->
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white border-bottom py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="fw-bold mb-0">Registros Calificados</h5>
+                        <small class="text-muted">Gestión de registros y certificaciones</small>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button class="btn btn-outline-secondary btn-sm" onclick="exportarRegistros()">
+                            <i class="bi bi-download me-1"></i>Exportar
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-0">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="fw-semibold text-secondary small ps-4">Código Programa</th>
+                                <th class="fw-semibold text-secondary small">Versión</th>
+                                <th class="fw-semibold text-secondary small">Resolución</th>
+                                <th class="fw-semibold text-secondary small">Tipo Trámite</th>
+                                <th class="fw-semibold text-secondary small">Modalidad</th>
+                                <th class="fw-semibold text-secondary small">Fecha Resolución</th>
+                                <th class="fw-semibold text-secondary small">Fecha Vencimiento</th>
+                                <th class="fw-semibold text-secondary small text-center">Estado</th>
+                                <th class="fw-semibold text-secondary small text-center">Días Restantes</th>
+                                <th class="fw-semibold text-secondary small text-center pe-4">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaRegistros" class="border-top-0">
+                            <!-- Los datos se cargarán aquí -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Modal para Nuevo Registro -->
+<div class="modal fade" id="modalNuevoRegistro" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-primary text-white border-0 rounded-top">
+                <h5 class="modal-title fw-bold">
+                    <i class="bi bi-file-earmark-plus me-2"></i>Nuevo Registro Calificado
+                </h5>
+                <button type="button" class="btn-close btn-close-white shadow-none" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="formNuevoRegistro">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-journal-text me-1"></i>Programa
+                            </label>
+                            <select class="form-select shadow-none" id="selectPrograma" required>
+                                <option value="">Seleccionar programa...</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-clipboard-check me-1"></i>Tipo de Trámite
+                            </label>
+                            <select class="form-select shadow-none" id="tipoTramite" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="inicial">Registro Inicial</option>
+                                <option value="renovacion">Renovación</option>
+                                <option value="modificacion">Modificación</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-file-text me-1"></i>Número de Resolución
+                            </label>
+                            <input type="text" class="form-control shadow-none" id="numeroResolucion" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-laptop me-1"></i>Modalidad
+                            </label>
+                            <select class="form-select shadow-none" id="modalidad" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="presencial">Presencial</option>
+                                <option value="virtual">Virtual</option>
+                                <option value="mixta">Mixta</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-calendar-date me-1"></i>Fecha Resolución
+                            </label>
+                            <input type="date" class="form-control shadow-none" id="fechaResolucion" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-clock-history me-1"></i>Vigencia (años)
+                            </label>
+                            <input type="number" class="form-control shadow-none" id="vigencia" min="1" max="10" value="7" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-tags me-1"></i>Clasificación
+                            </label>
+                            <select class="form-select shadow-none" id="clasificacion" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="academica">Académica</option>
+                                <option value="tecnica">Técnica</option>
+                                <option value="tecnologica">Tecnológica</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-check-circle me-1"></i>Estado Catálogo
+                            </label>
+                            <select class="form-select shadow-none" id="estadoCatalogo" required>
+                                <option value="">Seleccionar...</option>
+                                <option value="aprobado">Aprobado</option>
+                                <option value="pendiente">Pendiente</option>
+                                <option value="en_estudio">En estudio</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg me-1"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-primary" onclick="guardarNuevoRegistro()">
+                    <i class="bi bi-save me-1"></i>Guardar Registro
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CSS adicional para mejorar la apariencia -->
+<style>
+    .hover-shadow:hover {
+        transform: translateY(-2px);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15)!important;
+    }
+    
+    .world-card {
+        transition: all 0.3s ease;
+        border-width: 2px;
+    }
+    
+    .world-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15)!important;
+    }
+    
+    .accordion-button:not(.collapsed) {
+        background-color: #f8f9fa;
+        color: #0d6efd;
+        box-shadow: none;
+    }
+    
+    .accordion-button:focus {
+        box-shadow: none;
+        border-color: #dee2e6;
+    }
+    
+    .table th {
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.5px;
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    .table td {
+        vertical-align: middle;
+        padding: 1rem 0.75rem;
+    }
+    
+    .badge {
+        font-weight: 500;
+        padding: 0.35em 0.65em;
+    }
+    
+    .card {
+        border-radius: 0.75rem;
+    }
+    
+    .btn {
+        border-radius: 0.5rem;
+        font-weight: 500;
+    }
+    
+    .form-control,
+    .form-select {
+        border-radius: 0.5rem;
+        border: 1px solid #dee2e6;
+    }
+    
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #86b7fe;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.1);
+    }
+    
+    .input-group-text {
+        border-radius: 0.5rem 0 0 0.5rem;
+    }
+    
+    .page-link {
+        border-radius: 0.375rem;
+        margin: 0 2px;
+    }
+    
+    .modal-content {
+        border-radius: 1rem;
+    }
+    
+    .modal-header {
+        border-radius: 1rem 1rem 0 0;
+        padding: 1.25rem 1.5rem;
+    }
+</style>
